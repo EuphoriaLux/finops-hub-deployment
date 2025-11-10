@@ -1,0 +1,180 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "basics": [
+      {
+        "name": "hubName",
+        "type": "Microsoft.Common.TextBox",
+        "label": "FinOps Hub Name",
+        "defaultValue": "finops-hub",
+        "toolTip": "Unique name for your FinOps Hub. This will be used as a prefix for all resources.",
+        "placeholder": "my-company-finops-hub",
+        "constraints": {
+          "required": true,
+          "regex": "^[a-z0-9-]{3,24}$",
+          "validationMessage": "Hub name must be 3-24 characters long and can only contain lowercase letters, numbers, and hyphens."
+        },
+        "visible": true
+      }
+    ],
+    "steps": [
+      {
+        "name": "configuration",
+        "label": "Configuration",
+        "elements": [
+          {
+            "name": "storageSku",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Storage SKU",
+            "defaultValue": "Premium_LRS (Locally Redundant)",
+            "toolTip": "Select storage redundancy. LRS is lowest cost, ZRS provides high availability across availability zones.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Premium_LRS (Locally Redundant)",
+                  "value": "Premium_LRS"
+                },
+                {
+                  "label": "Premium_ZRS (Zone Redundant)",
+                  "value": "Premium_ZRS"
+                }
+              ],
+              "required": true
+            },
+            "visible": true
+          },
+          {
+            "name": "enableManagedExports",
+            "type": "Microsoft.Common.OptionsGroup",
+            "label": "Enable Managed Exports",
+            "defaultValue": "Yes",
+            "toolTip": "Automatically create and manage Cost Management exports. Requires User Access Administrator role.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Yes",
+                  "value": true
+                },
+                {
+                  "label": "No",
+                  "value": false
+                }
+              ],
+              "required": true
+            },
+            "visible": true
+          },
+          {
+            "name": "scopesToMonitor",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Scopes to Monitor (Optional)",
+            "defaultValue": "",
+            "toolTip": "Comma-separated list of Azure subscription IDs or billing account IDs to monitor. Leave empty to configure later.",
+            "placeholder": "/subscriptions/00000000-0000-0000-0000-000000000000",
+            "constraints": {
+              "required": false
+            },
+            "visible": true
+          }
+        ]
+      },
+      {
+        "name": "advanced",
+        "label": "Advanced Settings",
+        "elements": [
+          {
+            "name": "enablePublicAccess",
+            "type": "Microsoft.Common.OptionsGroup",
+            "label": "Enable Public Access",
+            "defaultValue": "Yes",
+            "toolTip": "Allow public network access to resources. Select 'No' for private network deployment.",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Yes",
+                  "value": true
+                },
+                {
+                  "label": "No",
+                  "value": false
+                }
+              ],
+              "required": true
+            },
+            "visible": true
+          },
+          {
+            "name": "enableInfrastructureEncryption",
+            "type": "Microsoft.Common.OptionsGroup",
+            "label": "Enable Infrastructure Encryption",
+            "defaultValue": "No",
+            "toolTip": "Enable double encryption on storage account for enhanced security (additional cost).",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Yes",
+                  "value": true
+                },
+                {
+                  "label": "No",
+                  "value": false
+                }
+              ],
+              "required": true
+            },
+            "visible": true
+          },
+          {
+            "name": "ingestionRetentionInMonths",
+            "type": "Microsoft.Common.Slider",
+            "min": 1,
+            "max": 36,
+            "label": "Data Retention (Months)",
+            "subLabel": "months",
+            "defaultValue": 13,
+            "toolTip": "Number of months to retain processed cost data in the ingestion container.",
+            "constraints": {
+              "required": false
+            },
+            "visible": true
+          },
+          {
+            "name": "tags",
+            "type": "Microsoft.Common.TagsByResource",
+            "resources": [
+              "Microsoft.Storage/storageAccounts",
+              "Microsoft.DataFactory/factories",
+              "Microsoft.KeyVault/vaults"
+            ],
+            "toolTip": "Add tags to your resources for organization and cost tracking."
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "location": "[location()]",
+      "hubName": "[basics('hubName')]",
+      "storageSku": "[steps('configuration').storageSku]",
+      "enableInfrastructureEncryption": "[steps('advanced').enableInfrastructureEncryption]",
+      "enableManagedExports": "[steps('configuration').enableManagedExports]",
+      "dataExplorerName": "",
+      "dataExplorerSku": "Dev(No SLA)_Standard_D11_v2",
+      "dataExplorerCapacity": 1,
+      "fabricQueryUri": "",
+      "fabricCapacityUnits": 2,
+      "tags": "[steps('advanced').tags]",
+      "tagsByResource": {},
+      "scopesToMonitor": "[if(equals(steps('configuration').scopesToMonitor, ''), createArray(), split(steps('configuration').scopesToMonitor, ','))]",
+      "exportRetentionInDays": 0,
+      "ingestionRetentionInMonths": "[steps('advanced').ingestionRetentionInMonths]",
+      "dataExplorerRawRetentionInDays": 0,
+      "dataExplorerFinalRetentionInMonths": 13,
+      "enablePublicAccess": "[steps('advanced').enablePublicAccess]",
+      "virtualNetworkAddressPrefix": "10.20.30.0/26",
+      "remoteHubStorageUri": "",
+      "remoteHubStorageKey": ""
+    }
+  }
+}
