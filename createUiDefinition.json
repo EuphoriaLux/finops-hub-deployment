@@ -30,7 +30,7 @@
             "visible": true,
             "options": {
               "icon": "Info",
-              "text": "This deployment will create:\n• Storage Account (Data Lake Gen2)\n• Azure Data Factory with pipelines\n• Key Vault\n• 3 Managed Identities\n• Event Grid System Topic\n\nEstimated cost: $75-260/month | Deployment time: 15-20 min"
+              "text": "This deployment will create:\n• Storage Account (Data Lake Gen2)\n• Azure Data Factory with pipelines\n• Key Vault\n• 3 Managed Identities\n• Event Grid System Topic\n\nEstimated cost: $5-20/month | Deployment time: 15-20 min"
             }
           },
           {

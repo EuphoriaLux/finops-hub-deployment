@@ -27,13 +27,14 @@ This template deploys the core FinOps Hub infrastructure:
 - **Resources:** 5-7 core resources
 
 ### Monthly Cost Estimate
-- **Storage Account:** ~$50-150/month (depends on data volume)
-- **Azure Data Factory:** ~$20-100/month (depends on pipeline runs)
-- **Key Vault:** ~$5/month
-- **Event Grid:** ~$1-5/month
-- **Total:** ~$75-260/month
+- **Storage Account:** ~$2-10/month (typically 10-50 GB of cost data)
+- **Azure Data Factory:** ~$1-5/month (daily pipeline runs, ~$0.005 per activity)
+- **Key Vault:** ~$1-2/month
+- **Event Grid:** <$1/month
+- **Managed Identities:** FREE
+- **Total:** ~$5-20/month
 
-**Note:** Actual costs depend on your data volume, pipeline execution frequency, and retention settings.
+**Note:** Actual costs depend on your data volume, pipeline execution frequency, and retention settings. This estimate assumes daily cost export processing with typical enterprise cost data volumes.
 
 ## ✅ Prerequisites
 
