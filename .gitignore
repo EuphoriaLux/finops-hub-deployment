@@ -23,3 +23,19 @@ desktop.ini
 # Local test files
 test-*.json
 local-*.json
+
+# Local reference/setup files (not for GitHub)
+AZURE-DEPLOY-LINK.md
+DEPLOYMENT-OPTIONS-COMPARISON.md
+GITHUB-DEPLOY-SETUP.md
+GITHUB-SETUP-INSTRUCTIONS.md
+setup-github.txt
+YOUR-DEPLOYMENT-LINKS.md
+validate-template.ps1
+validate-template.sh
+template.parameters.json
+finops-extracted.txt
+
+# Local folders
+deployments/
+scripts/
