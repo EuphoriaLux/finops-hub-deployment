@@ -1,0 +1,196 @@
+# FinOps Hub - Azure Deployment
+
+Deploy a complete FinOps Hub solution to your Azure subscription for cost management and optimization.
+
+## 🚀 Quick Deploy
+
+Click the button below to deploy to your Azure subscription:
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FYOUR-USERNAME%2Ffinops-hub-deployment%2Fmain%2Ftemplate.json)
+
+> **Note:** You'll need to replace `YOUR-USERNAME` in the URL above after pushing to GitHub.
+
+## 📋 What Gets Deployed
+
+This template deploys a complete FinOps Hub infrastructure:
+
+- **Storage Account** (Data Lake Gen2) - For cost data storage
+- **Azure Data Factory** - ETL pipelines for data processing
+- **Key Vault** - Secure secrets management
+- **Managed Identity** - Service authentication
+- **Optional: Azure Data Explorer** - Advanced analytics (for >$2M/month costs)
+- **Optional: Virtual Network** - Private networking with endpoints
+
+## 📊 Deployment Options
+
+### Small Business (<$2M/month costs)
+- No Azure Data Explorer
+- **Cost:** ~$75-255/month
+- **Time:** ~15 minutes
+
+### Medium Enterprise ($2-5M/month costs)
+- Dev Azure Data Explorer
+- **Cost:** ~$275-655/month
+- **Time:** ~30 minutes
+
+### Large Enterprise (>$5M/month costs)
+- Standard Azure Data Explorer
+- **Cost:** ~$1,575-3,255/month
+- **Time:** ~45 minutes
+
+## ✅ Prerequisites
+
+Before deploying, ensure you have:
+
+- ✅ Active Azure subscription
+- ✅ **Contributor** role on target subscription/resource group
+- ✅ **User Access Administrator** role (if using managed exports)
+- ✅ 15-45 minutes for deployment
+
+## 🔧 Parameters
+
+Key parameters you'll configure during deployment:
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `hubName` | Unique hub identifier | Required |
+| `location` | Azure region | Resource group location |
+| `storageSku` | Storage tier (Premium_LRS/Premium_ZRS) | Premium_LRS |
+| `enableManagedExports` | Auto-create Cost Management exports | true |
+| `dataExplorerName` | Azure Data Explorer cluster name | "" (disabled) |
+| `enablePublicAccess` | Allow public network access | true |
+
+[See full parameters documentation](DEPLOYMENT-GUIDE.md)
+
+## 📖 Documentation
+
+- **[Deployment Guide](DEPLOYMENT-GUIDE.md)** - Complete deployment instructions
+- **[Customer Checklist](CUSTOMER-CHECKLIST.md)** - Step-by-step deployment checklist
+- **[Deployment Options](DEPLOYMENT-OPTIONS-COMPARISON.md)** - Compare deployment methods
+
+## 🎯 Deployment Methods
+
+### Option 1: Azure Portal (Recommended)
+Click the "Deploy to Azure" button above.
+
+### Option 2: Azure CLI
+```bash
+az deployment group create \
+  --name finops-hub-deployment \
+  --resource-group rg-finops-hub-prod \
+  --template-file template.json \
+  --parameters hubName=my-finops-hub
+```
+
+### Option 3: PowerShell
+```powershell
+New-AzResourceGroupDeployment `
+  -Name finops-hub-deployment `
+  -ResourceGroupName rg-finops-hub-prod `
+  -TemplateFile template.json `
+  -hubName my-finops-hub
+```
+
+## 💰 Cost Estimation
+
+### Base Configuration (No Data Explorer)
+- Storage Account: ~$50-150/month
+- Data Factory: ~$20-100/month
+- Key Vault: ~$5/month
+- **Total: ~$75-255/month**
+
+### With Data Explorer (Dev SKU)
+- Base + Dev Data Explorer: ~$200-400/month
+- **Total: ~$275-655/month**
+
+### With Data Explorer (Standard SKU)
+- Base + Standard Data Explorer: ~$1,500-3,000/month
+- **Total: ~$1,575-3,255/month**
+
+> Actual costs depend on data volume, pipeline runs, and retention settings.
+
+## 🔒 Security Features
+
+- ✅ Managed identities (no passwords)
+- ✅ Key Vault for secrets
+- ✅ Optional infrastructure encryption
+- ✅ Private networking support
+- ✅ RBAC-based access control
+
+## 🎨 Customization
+
+You can customize the deployment by:
+
+1. Creating a parameters file:
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubName": { "value": "my-company-finops" },
+    "location": { "value": "eastus" },
+    "enablePublicAccess": { "value": false }
+  }
+}
+```
+
+2. Deploying with parameters:
+```bash
+az deployment group create \
+  --template-file template.json \
+  --parameters @template.parameters.json
+```
+
+## 📦 What Happens After Deployment
+
+1. **Resources Created** - All Azure resources are provisioned
+2. **Data Factory Pipelines** - Automatically configured
+3. **Cost Management Exports** - Created (if enabled)
+4. **Data Ingestion** - Begins within 24 hours
+5. **Analytics Ready** - Data available for querying
+
+## 🐛 Troubleshooting
+
+### "Insufficient permissions" error
+- Ensure you have both Contributor + User Access Administrator roles
+- Or disable managed exports: set `enableManagedExports` to `false`
+
+### Resource name conflicts
+- Change the `hubName` parameter to ensure unique names
+
+### No cost data appearing
+- Wait at least 24 hours (exports run daily)
+- Verify Cost Management exports are created
+- Check managed identity has required permissions
+
+[See full troubleshooting guide](DEPLOYMENT-GUIDE.md#troubleshooting)
+
+## 🔄 Updates
+
+To update your deployment:
+1. Modify parameters as needed
+2. Re-run the deployment command
+3. ARM will update resources incrementally
+
+## 📚 Additional Resources
+
+- [Microsoft FinOps Hub Documentation](https://aka.ms/finops/hub)
+- [Azure Cost Management](https://aka.ms/costmgmt)
+- [FinOps Framework](https://www.finops.org/)
+
+## 💬 Support
+
+For questions or issues:
+- Open an [issue](../../issues) in this repository
+- Contact your solution provider
+- Review the [troubleshooting guide](DEPLOYMENT-GUIDE.md#troubleshooting)
+
+## 📄 License
+
+This template is provided as-is. Please ensure compliance with Microsoft's licensing terms.
+
+---
+
+**Template Version:** 0.36.177.2456
+**Last Updated:** 2025-11-10
+**Generated From:** Bicep
