@@ -5,12 +5,13 @@
   "parameters": {
     "basics": [
       {
-        "name": "deploymentInfo",
-        "type": "Microsoft.Common.InfoBox",
-        "visible": true,
-        "options": {
-          "icon": "Info",
-          "text": "This deployment will create the following resources:\n\n• Storage Account (Data Lake Gen2) with 'msexports' and 'ingestion' containers\n• Azure Data Factory with ETL pipelines\n• Key Vault for secrets management\n• 3 Managed Identities (Data Factory MI, Trigger Manager, Blob Manager)\n• Event Grid System Topic for automation\n\nEstimated cost: $75-260/month\nDeployment time: 15-20 minutes"
+        "name": "resourceScope",
+        "type": "Microsoft.Common.ResourceScope",
+        "location": {
+          "resourceTypes": [
+            "Microsoft.Storage/storageAccounts",
+            "Microsoft.DataFactory/factories"
+          ]
         }
       },
       {
@@ -33,6 +34,15 @@
         "name": "configuration",
         "label": "Configuration",
         "elements": [
+          {
+            "name": "deploymentInfo",
+            "type": "Microsoft.Common.InfoBox",
+            "visible": true,
+            "options": {
+              "icon": "Info",
+              "text": "This deployment will create:\n• Storage Account (Data Lake Gen2)\n• Azure Data Factory with pipelines\n• Key Vault\n• 3 Managed Identities\n• Event Grid System Topic\n\nEstimated cost: $75-260/month | Deployment time: 15-20 min"
+            }
+          },
           {
             "name": "storageSku",
             "type": "Microsoft.Common.DropDown",
@@ -151,7 +161,7 @@
       }
     ],
     "outputs": {
-      "location": "[location()]",
+      "location": "[basics('resourceScope').location.name]",
       "hubName": "[basics('hubName')]",
       "storageSku": "[steps('configuration').storageSku]",
       "enableInfrastructureEncryption": "[steps('advanced').enableInfrastructureEncryption]",
