@@ -6,9 +6,7 @@ Deploy a complete FinOps Hub solution to your Azure subscription for cost manage
 
 Click the button below to deploy to your Azure subscription:
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FYOUR-USERNAME%2Ffinops-hub-deployment%2Fmain%2Ftemplate.json)
-
-> **Note:** You'll need to replace `YOUR-USERNAME` in the URL above after pushing to GitHub.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2Ftemplate.json)
 
 ## 📋 What Gets Deployed
 
@@ -47,9 +45,30 @@ Before deploying, ensure you have:
 - ✅ **User Access Administrator** role (if using managed exports)
 - ✅ 15-45 minutes for deployment
 
-## 🔧 Parameters
+## 🔧 Deployment Methods
 
-Key parameters you'll configure during deployment:
+### Option 1: Azure Portal (Recommended)
+Click the "Deploy to Azure" button above.
+
+### Option 2: Azure CLI
+```bash
+az deployment group create \
+  --name finops-hub-deployment \
+  --resource-group rg-finops-hub-prod \
+  --template-uri https://raw.githubusercontent.com/EuphoriaLux/finops-hub-deployment/main/template.json \
+  --parameters hubName=my-finops-hub
+```
+
+### Option 3: PowerShell
+```powershell
+New-AzResourceGroupDeployment `
+  -Name finops-hub-deployment `
+  -ResourceGroupName rg-finops-hub-prod `
+  -TemplateUri https://raw.githubusercontent.com/EuphoriaLux/finops-hub-deployment/main/template.json `
+  -hubName my-finops-hub
+```
+
+## 🔧 Key Parameters
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
@@ -60,36 +79,11 @@ Key parameters you'll configure during deployment:
 | `dataExplorerName` | Azure Data Explorer cluster name | "" (disabled) |
 | `enablePublicAccess` | Allow public network access | true |
 
-[See full parameters documentation](DEPLOYMENT-GUIDE.md)
-
 ## 📖 Documentation
 
 - **[Deployment Guide](DEPLOYMENT-GUIDE.md)** - Complete deployment instructions
 - **[Customer Checklist](CUSTOMER-CHECKLIST.md)** - Step-by-step deployment checklist
 - **[Deployment Options](DEPLOYMENT-OPTIONS-COMPARISON.md)** - Compare deployment methods
-
-## 🎯 Deployment Methods
-
-### Option 1: Azure Portal (Recommended)
-Click the "Deploy to Azure" button above.
-
-### Option 2: Azure CLI
-```bash
-az deployment group create \
-  --name finops-hub-deployment \
-  --resource-group rg-finops-hub-prod \
-  --template-file template.json \
-  --parameters hubName=my-finops-hub
-```
-
-### Option 3: PowerShell
-```powershell
-New-AzResourceGroupDeployment `
-  -Name finops-hub-deployment `
-  -ResourceGroupName rg-finops-hub-prod `
-  -TemplateFile template.json `
-  -hubName my-finops-hub
-```
 
 ## 💰 Cost Estimation
 
@@ -117,38 +111,6 @@ New-AzResourceGroupDeployment `
 - ✅ Private networking support
 - ✅ RBAC-based access control
 
-## 🎨 Customization
-
-You can customize the deployment by:
-
-1. Creating a parameters file:
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "hubName": { "value": "my-company-finops" },
-    "location": { "value": "eastus" },
-    "enablePublicAccess": { "value": false }
-  }
-}
-```
-
-2. Deploying with parameters:
-```bash
-az deployment group create \
-  --template-file template.json \
-  --parameters @template.parameters.json
-```
-
-## 📦 What Happens After Deployment
-
-1. **Resources Created** - All Azure resources are provisioned
-2. **Data Factory Pipelines** - Automatically configured
-3. **Cost Management Exports** - Created (if enabled)
-4. **Data Ingestion** - Begins within 24 hours
-5. **Analytics Ready** - Data available for querying
-
 ## 🐛 Troubleshooting
 
 ### "Insufficient permissions" error
@@ -165,13 +127,6 @@ az deployment group create \
 
 [See full troubleshooting guide](DEPLOYMENT-GUIDE.md#troubleshooting)
 
-## 🔄 Updates
-
-To update your deployment:
-1. Modify parameters as needed
-2. Re-run the deployment command
-3. ARM will update resources incrementally
-
 ## 📚 Additional Resources
 
 - [Microsoft FinOps Hub Documentation](https://aka.ms/finops/hub)
@@ -182,8 +137,7 @@ To update your deployment:
 
 For questions or issues:
 - Open an [issue](../../issues) in this repository
-- Contact your solution provider
-- Review the [troubleshooting guide](DEPLOYMENT-GUIDE.md#troubleshooting)
+- Review the [troubleshooting guide](DEPLOYMENT-GUIDE.md)
 
 ## 📄 License
 
