@@ -166,7 +166,7 @@
       "fabricCapacityUnits": 2,
       "tags": "[steps('advanced').tags]",
       "tagsByResource": {},
-      "scopesToMonitor": "[if(equals(steps('configuration').scopesToMonitor, ''), createArray(), split(steps('configuration').scopesToMonitor, ','))]",
+      "scopesToMonitor": "[if(equals(steps('configuration').scopesToMonitor, ''), parse('[]'), split(steps('configuration').scopesToMonitor, ','))]",
       "exportRetentionInDays": 0,
       "ingestionRetentionInMonths": "[steps('advanced').ingestionRetentionInMonths]",
       "dataExplorerRawRetentionInDays": 0,
