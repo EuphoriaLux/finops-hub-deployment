@@ -65,18 +65,6 @@
               "required": true
             },
             "visible": true
-          },
-          {
-            "name": "scopesToMonitor",
-            "type": "Microsoft.Common.TextBox",
-            "label": "Scopes to Monitor (Optional)",
-            "defaultValue": "",
-            "toolTip": "Comma-separated list of Azure subscription IDs or billing account IDs to monitor. Leave empty to configure later.",
-            "placeholder": "/subscriptions/00000000-0000-0000-0000-000000000000",
-            "constraints": {
-              "required": false
-            },
-            "visible": true
           }
         ]
       },
@@ -166,7 +154,7 @@
       "fabricCapacityUnits": 2,
       "tags": "[steps('advanced').tags]",
       "tagsByResource": {},
-      "scopesToMonitor": "[if(equals(steps('configuration').scopesToMonitor, ''), parse('[]'), split(steps('configuration').scopesToMonitor, ','))]",
+      "scopesToMonitor": [],
       "exportRetentionInDays": 0,
       "ingestionRetentionInMonths": "[steps('advanced').ingestionRetentionInMonths]",
       "dataExplorerRawRetentionInDays": 0,
