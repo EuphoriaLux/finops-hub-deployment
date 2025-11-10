@@ -5,6 +5,15 @@
   "parameters": {
     "basics": [
       {
+        "name": "deploymentInfo",
+        "type": "Microsoft.Common.InfoBox",
+        "visible": true,
+        "options": {
+          "icon": "Info",
+          "text": "This deployment will create the following resources:\n\n• Storage Account (Data Lake Gen2) with 'msexports' and 'ingestion' containers\n• Azure Data Factory with ETL pipelines\n• Key Vault for secrets management\n• 3 Managed Identities (Data Factory MI, Trigger Manager, Blob Manager)\n• Event Grid System Topic for automation\n\nEstimated cost: $75-260/month\nDeployment time: 15-20 minutes"
+        }
+      },
+      {
         "name": "hubName",
         "type": "Microsoft.Common.TextBox",
         "label": "FinOps Hub Name",
