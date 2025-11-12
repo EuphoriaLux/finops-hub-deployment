@@ -1,1 +1,0 @@
-Hub name must be 3-24 characters long and can only contain lowercase letters, numbers, and hyphens.

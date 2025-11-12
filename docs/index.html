@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinOps Hub - Deployment Guide</title>
+    <style>
+        :root {
+            --primary-color: #0078d4;
+            --secondary-color: #50e6ff;
+            --success-color: #10893e;
+            --warning-color: #faa21b;
+            --danger-color: #e81123;
+            --dark-bg: #1e1e1e;
+            --card-bg: #ffffff;
+            --text-primary: #323130;
+            --text-secondary: #605e5c;
+            --border-color: #edebe9;
+            --code-bg: #f3f2f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #005a9e 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li {
+            margin: 0;
+        }
+
+        nav ul li a {
+            display: block;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        nav ul li a:hover {
+            background: var(--code-bg);
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        main {
+            padding: 3rem 0;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--secondary-color);
+        }
+
+        h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        h4 {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: #e6f4ff;
+            border-left-color: var(--primary-color);
+            color: #004085;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left-color: var(--success-color);
+            color: #155724;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left-color: var(--warning-color);
+            color: #856404;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-left-color: var(--danger-color);
+            color: #721c24;
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: var(--dark-bg);
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: var(--primary-color);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #005a9e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,120,212,0.3);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0c6b2f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--code-bg);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .feature-box {
+            padding: 1.5rem;
+            background: white;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary-color);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .feature-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .toc {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin: 2rem 0;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        .toc ul li {
+            margin: 0.5rem 0;
+        }
+
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav ul li a {
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>FinOps Hub Deployment Guide</h1>
+            <p>Complete guide for deploying and configuring FinOps Hub with FOCUS exports</p>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#deployment">Deployment</a></li>
+            <li><a href="#exports">Export Setup</a></li>
+            <li><a href="#csp">CSP Subscriptions</a></li>
+            <li><a href="#troubleshooting">Troubleshooting</a></li>
+            <li><a href="#resources">Resources</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <!-- Overview Section -->
+        <section id="overview" class="card">
+            <h2>Overview</h2>
+            <p>Welcome to the FinOps Hub deployment guide. This comprehensive documentation will help you deploy and configure Microsoft's FinOps Hub solution with FOCUS 1.0 cost exports.</p>
+
+            <div class="grid">
+                <div class="feature-box">
+                    <div class="icon">🚀</div>
+                    <h3>One-Click Deployment</h3>
+                    <p>Deploy the complete FinOps Hub infrastructure with a single ARM template</p>
+                </div>
+                <div class="feature-box">
+                    <div class="icon">📊</div>
+                    <h3>FOCUS 1.0 Exports</h3>
+                    <p>Industry-standard cost data format with Parquet compression</p>
+                </div>
+                <div class="feature-box">
+                    <div class="icon">💰</div>
+                    <h3>Cost Optimization</h3>
+                    <p>Comprehensive cost visibility across all Azure subscriptions</p>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>What is FinOps Hub?</strong><br>
+                FinOps Hub is Microsoft's open-source framework for cost management and optimization in Azure. It provides automated data collection, processing, and visualization of cost data across your entire Azure estate.
+            </div>
+
+            <h3>What You'll Deploy</h3>
+            <ul>
+                <li>Storage Account for cost export data</li>
+                <li>Data Factory for automated data processing</li>
+                <li>Power BI reports for cost visualization</li>
+                <li>Automated FOCUS 1.0 cost exports (manual configuration required)</li>
+            </ul>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Azure subscription with Owner or Contributor role</li>
+                <li>Microsoft.Storage resource provider registered</li>
+                <li>Microsoft.CostManagementExports resource provider registered</li>
+                <li>Cost Management Contributor role (for export creation)</li>
+            </ul>
+        </section>
+
+        <!-- Deployment Section -->
+        <section id="deployment" class="card">
+            <h2>Deployment Steps</h2>
+
+            <div class="alert alert-warning">
+                <strong>Important:</strong> Before deploying, ensure the required resource providers are registered in your subscription.
+            </div>
+
+            <h3>Step 1: Register Resource Providers</h3>
+            <p>Register the required Azure resource providers:</p>
+
+            <pre><code># PowerShell
+Register-AzResourceProvider -ProviderNamespace Microsoft.Storage
+Register-AzResourceProvider -ProviderNamespace Microsoft.CostManagementExports
+Register-AzResourceProvider -ProviderNamespace Microsoft.DataFactory
+
+# Azure CLI
+az provider register --namespace Microsoft.Storage
+az provider register --namespace Microsoft.CostManagementExports
+az provider register --namespace Microsoft.DataFactory</code></pre>
+
+            <h3>Step 2: Deploy the ARM Template</h3>
+
+            <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Ffinops-toolkit%2Fmain%2Fsrc%2Ftemplates%2Ffinops-hub%2Fazuredeploy.json" class="btn btn-primary" target="_blank">
+                Deploy to Azure
+            </a>
+
+            <p style="margin-top: 1rem;">Or use PowerShell:</p>
+
+            <pre><code># Deploy via PowerShell
+$resourceGroupName = "finhub-rg"
+$location = "westeurope"
+$hubName = "your-finops-hub"
+
+New-AzResourceGroup -Name $resourceGroupName -Location $location
+
+New-AzResourceGroupDeployment `
+    -ResourceGroupName $resourceGroupName `
+    -TemplateUri "https://raw.githubusercontent.com/microsoft/finops-toolkit/main/src/templates/finops-hub/azuredeploy.json" `
+    -hubName $hubName</code></pre>
+
+            <h3>Step 3: Verify Deployment</h3>
+            <ol class="steps">
+                <li>Navigate to the Azure Portal</li>
+                <li>Open your resource group</li>
+                <li>Verify the following resources exist:
+                    <ul>
+                        <li>Storage Account (for cost data)</li>
+                        <li>Data Factory (for data processing)</li>
+                        <li>Deployment scripts (temporary resources)</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <div class="alert alert-success">
+                <strong>Deployment Time:</strong> The initial deployment typically takes 10-15 minutes. Deployment script resources are temporary and will clean up automatically.
+            </div>
+        </section>
+
+        <!-- Export Setup Section -->
+        <section id="exports" class="card">
+            <h2>Setting Up Cost Exports</h2>
+
+            <div class="alert alert-warning">
+                <strong>Manual Configuration Required:</strong> For CSP subscriptions, cost exports must be created manually through the Azure Portal due to API restrictions.
+            </div>
+
+            <h3>Export Configuration</h3>
+            <p>Each subscription requires a FOCUS 1.0 export with the following configuration:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Setting</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Export Name</td>
+                        <td><code>ftk-{hubName}-focus</code></td>
+                    </tr>
+                    <tr>
+                        <td>Export Type</td>
+                        <td>Cost and usage details (FOCUS)</td>
+                    </tr>
+                    <tr>
+                        <td>Dataset Version</td>
+                        <td>1.0</td>
+                    </tr>
+                    <tr>
+                        <td>Format</td>
+                        <td>Parquet</td>
+                    </tr>
+                    <tr>
+                        <td>Compression</td>
+                        <td>Snappy</td>
+                    </tr>
+                    <tr>
+                        <td>Frequency</td>
+                        <td>Daily (Month-to-Date)</td>
+                    </tr>
+                    <tr>
+                        <td>File Partitioning</td>
+                        <td>On</td>
+                    </tr>
+                    <tr>
+                        <td>Container</td>
+                        <td>msexports</td>
+                    </tr>
+                    <tr>
+                        <td>Directory</td>
+                        <td>subscriptions/{subscription-id}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Manual Export Creation (Recommended for CSP)</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Navigate to Cost Management</strong>
+                    <p>Go to <a href="https://portal.azure.com/#view/Microsoft_Azure_CostManagement/Menu/~/exports" target="_blank">Azure Portal → Cost Management → Exports</a></p>
+                </li>
+                <li>
+                    <strong>Select Subscription</strong>
+                    <p>Use the scope selector to choose the target subscription</p>
+                </li>
+                <li>
+                    <strong>Create Export</strong>
+                    <p>Click "+ Create" and fill in the configuration values from the table above</p>
+                </li>
+                <li>
+                    <strong>Configure Storage Destination</strong>
+                    <ul>
+                        <li>Select your FinOps Hub storage account</li>
+                        <li>Container: <code>msexports</code></li>
+                        <li>Directory: <code>subscriptions/{subscription-id}</code> (use the actual subscription GUID)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Review and Create</strong>
+                    <p>Verify all settings and click "Create"</p>
+                </li>
+            </ol>
+
+            <div class="alert alert-info">
+                <strong>First Export Timeline:</strong> After creation, the first export typically completes within 4-8 hours. Data will then be automatically processed by Data Factory.
+            </div>
+
+            <h3>Quick Links for Your Subscriptions</h3>
+            <p>Replace the subscription IDs below with your actual subscription GUIDs:</p>
+
+            <ul>
+                <li><a href="https://portal.azure.com/#@yourtenant.com/resource/subscriptions/{sub-id}/costmanagementexports" target="_blank">Subscription 1 - Exports</a></li>
+                <li><a href="https://portal.azure.com/#@yourtenant.com/resource/subscriptions/{sub-id}/costmanagementexports" target="_blank">Subscription 2 - Exports</a></li>
+                <li><a href="https://portal.azure.com/#@yourtenant.com/resource/subscriptions/{sub-id}/costmanagementexports" target="_blank">Subscription 3 - Exports</a></li>
+                <li><a href="https://portal.azure.com/#@yourtenant.com/resource/subscriptions/{sub-id}/costmanagementexports" target="_blank">Subscription 4 - Exports</a></li>
+            </ul>
+        </section>
+
+        <!-- CSP Section -->
+        <section id="csp" class="card">
+            <h2>CSP Subscription Considerations</h2>
+
+            <div class="alert alert-danger">
+                <strong>CSP API Restriction:</strong> Cloud Solution Provider (CSP) subscriptions have restrictions on programmatic Cost Management API access. Automated export creation via PowerShell/REST API is blocked.
+            </div>
+
+            <h3>Why Automation Doesn't Work for CSP</h3>
+            <p>CSP subscriptions have a unique architecture where:</p>
+            <ul>
+                <li>The <strong>Partner tenant</strong> owns the subscriptions</li>
+                <li>Customer tenant users have delegated access</li>
+                <li>Cost Management APIs require Partner tenant authentication</li>
+                <li>Customer tenant API calls return <code>401 Unauthorized</code></li>
+            </ul>
+
+            <div class="grid">
+                <div>
+                    <h4>Portal Access (✅ Works)</h4>
+                    <p>User-interactive authentication allows Portal access with your customer credentials</p>
+                </div>
+                <div>
+                    <h4>API Access (❌ Blocked)</h4>
+                    <p>Programmatic authentication requires Partner tenant credentials</p>
+                </div>
+            </div>
+
+            <h3>Solution Options</h3>
+
+            <h4>Option 1: Manual Portal Setup (Recommended)</h4>
+            <p><strong>Time Required:</strong> 5-10 minutes per subscription</p>
+            <p>Follow the manual export creation steps in the <a href="#exports">Export Setup</a> section above.</p>
+
+            <h4>Option 2: Partner-Side Automation</h4>
+            <p>Contact your CSP Partner and request they:</p>
+            <ul>
+                <li>Run export creation scripts from their Partner tenant</li>
+                <li>Set up Azure Lighthouse delegation</li>
+                <li>Configure exports through Partner Center</li>
+            </ul>
+
+            <h4>Option 3: Azure Lighthouse</h4>
+            <p>Set up Azure Lighthouse delegation to give Partner explicit programmatic access:</p>
+            <ul>
+                <li>Partner creates Lighthouse offer with Cost Management permissions</li>
+                <li>Customer accepts delegation</li>
+                <li>Partner can manage exports programmatically</li>
+            </ul>
+
+            <div class="alert alert-info">
+                <strong>Recommendation:</strong> Use manual Portal setup for immediate needs (40 minutes for 4 subscriptions). Work with your CSP Partner for long-term automation.
+            </div>
+        </section>
+
+        <!-- Troubleshooting Section -->
+        <section id="troubleshooting" class="card">
+            <h2>Troubleshooting</h2>
+
+            <h3>Common Issues and Solutions</h3>
+
+            <h4>Deployment Failures</h4>
+            <div class="alert alert-warning">
+                <strong>Error:</strong> "The subscription is not registered to use namespace 'Microsoft.Storage'"
+                <br><strong>Solution:</strong> Register the required resource providers (see <a href="#deployment">Deployment Steps</a>)
+            </div>
+
+            <h4>Export Creation 401 Errors</h4>
+            <div class="alert alert-warning">
+                <strong>Error:</strong> 401 Unauthorized when creating exports via PowerShell
+                <br><strong>Solution:</strong> Use manual Portal setup for CSP subscriptions (see <a href="#csp">CSP Considerations</a>)
+            </div>
+
+            <h4>Storage Account Not Found</h4>
+            <div class="alert alert-warning">
+                <strong>Error:</strong> Cannot find storage account in resource group
+                <br><strong>Solution:</strong> Verify deployment completed successfully. Check that you're in the correct subscription and resource group.
+            </div>
+
+            <h4>Export Not Running</h4>
+            <div class="alert alert-warning">
+                <strong>Issue:</strong> Export created but no data appearing
+                <br><strong>Solution:</strong>
+                <ul>
+                    <li>Wait 4-8 hours for first export to complete</li>
+                    <li>Verify export is "Active" in the Portal</li>
+                    <li>Check storage account permissions</li>
+                    <li>Ensure msexports container exists</li>
+                </ul>
+            </div>
+
+            <h3>Getting Help</h3>
+            <p>If you encounter issues not covered here:</p>
+            <ul>
+                <li>Check the <a href="https://github.com/microsoft/finops-toolkit/issues" target="_blank">FinOps Toolkit GitHub Issues</a></li>
+                <li>Review <a href="https://learn.microsoft.com/en-us/azure/cost-management-billing/" target="_blank">Azure Cost Management documentation</a></li>
+                <li>Contact your Azure support team</li>
+            </ul>
+        </section>
+
+        <!-- Resources Section -->
+        <section id="resources" class="card">
+            <h2>Additional Resources</h2>
+
+            <h3>Official Documentation</h3>
+            <ul>
+                <li><a href="https://learn.microsoft.com/en-us/cloud-computing/finops/toolkit/finops-toolkit-overview" target="_blank">FinOps Toolkit Overview</a></li>
+                <li><a href="https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-export-acm-data" target="_blank">Azure Cost Management Exports</a></li>
+                <li><a href="https://learn.microsoft.com/en-us/azure/cost-management-billing/dataset-schema/cost-usage-details-focus" target="_blank">FOCUS Dataset Documentation</a></li>
+                <li><a href="https://focus.finops.org/" target="_blank">FinOps FOCUS Specification</a></li>
+            </ul>
+
+            <h3>GitHub Repository</h3>
+            <ul>
+                <li><a href="https://github.com/microsoft/finops-toolkit" target="_blank">FinOps Toolkit on GitHub</a></li>
+                <li><a href="https://github.com/microsoft/finops-toolkit/tree/main/src/templates/finops-hub" target="_blank">FinOps Hub ARM Template</a></li>
+            </ul>
+
+            <h3>CSP-Specific Resources</h3>
+            <ul>
+                <li><a href="https://learn.microsoft.com/en-us/partner-center/csp-overview" target="_blank">CSP Program Overview</a></li>
+                <li><a href="https://learn.microsoft.com/en-us/azure/lighthouse/overview" target="_blank">Azure Lighthouse Documentation</a></li>
+                <li><a href="https://partner.microsoft.com/" target="_blank">Microsoft Partner Center</a></li>
+            </ul>
+
+            <h3>Power BI Reports</h3>
+            <ul>
+                <li><a href="https://learn.microsoft.com/en-us/cloud-computing/finops/toolkit/power-bi" target="_blank">FinOps Toolkit Power BI Reports</a></li>
+                <li><a href="https://app.powerbi.com/" target="_blank">Power BI Service</a></li>
+            </ul>
+        </section>
+
+        <!-- Quick Reference -->
+        <section class="card">
+            <h2>Quick Reference</h2>
+
+            <h3>Key Configuration Values</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Value</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Export Name Format</td>
+                        <td><code>ftk-{hubName}-focus</code></td>
+                        <td>Naming convention for exports</td>
+                    </tr>
+                    <tr>
+                        <td>Storage Container</td>
+                        <td><code>msexports</code></td>
+                        <td>Container for cost export data</td>
+                    </tr>
+                    <tr>
+                        <td>Directory Pattern</td>
+                        <td><code>subscriptions/{id}</code></td>
+                        <td>Folder structure for exports</td>
+                    </tr>
+                    <tr>
+                        <td>API Version (Portal)</td>
+                        <td><code>2025-03-01</code></td>
+                        <td>Latest API supporting FOCUS</td>
+                    </tr>
+                    <tr>
+                        <td>Dataset Version</td>
+                        <td><code>1.0</code></td>
+                        <td>FOCUS specification version</td>
+                    </tr>
+                    <tr>
+                        <td>Export Frequency</td>
+                        <td>Daily (MonthToDate)</td>
+                        <td>Recommended schedule</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Estimated Costs</h3>
+            <div class="alert alert-info">
+                <strong>Monthly Cost Estimate:</strong> -$20 USD (credits from export cost savings typically exceed infrastructure costs)
+                <ul>
+                    <li>Storage Account: ~$5-10/month</li>
+                    <li>Data Factory: ~$5-10/month</li>
+                    <li>Cost Optimization Savings: Typically $50-500+/month</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 FinOps Hub Deployment Guide</p>
+            <p>
+                <a href="https://github.com/microsoft/finops-toolkit" target="_blank">GitHub Repository</a> |
+                <a href="https://learn.microsoft.com/en-us/cloud-computing/finops/toolkit/finops-toolkit-overview" target="_blank">Official Documentation</a> |
+                <a href="https://focus.finops.org/" target="_blank">FOCUS Specification</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -88,8 +88,17 @@ You'll configure these during deployment:
 
 ## 📖 Documentation
 
-- **[Deployment Guide](DEPLOYMENT-GUIDE.md)** - Complete deployment instructions
-- **[Customer Checklist](CUSTOMER-CHECKLIST.md)** - Step-by-step deployment checklist
+### 🌐 **[View Complete Documentation →](https://[your-username].github.io/finops-hub-deployment/)**
+
+All documentation is available on our comprehensive documentation portal:
+
+✅ **Complete deployment instructions**
+✅ **Step-by-step export configuration guide**
+✅ **CSP subscription considerations**
+✅ **Troubleshooting and diagnostics**
+✅ **Resource links and references**
+
+👉 **[Enable GitHub Pages](GITHUB-PAGES-SETUP.md)** - Instructions to publish the documentation site
 
 ## 📦 Deployed Resources
 

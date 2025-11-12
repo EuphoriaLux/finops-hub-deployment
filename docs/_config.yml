@@ -1,0 +1,5 @@
+# GitHub Pages Configuration
+theme: jekyll-theme-cayman
+title: FinOps Hub Deployment Guide
+description: Complete guide for deploying and configuring FinOps Hub with FOCUS exports
+show_downloads: false
