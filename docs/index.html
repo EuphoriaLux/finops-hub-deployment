@@ -454,8 +454,8 @@ az provider register --namespace Microsoft.DataFactory</code></pre>
 
             <h3>Step 2: Deploy the ARM Template</h3>
 
-            <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Ffinops-toolkit%2Fmain%2Fsrc%2Ftemplates%2Ffinops-hub%2Fazuredeploy.json" class="btn btn-primary" target="_blank">
-                Deploy to Azure
+            <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2Ftemplate.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2FcreateUiDefinition.json" target="_blank" rel="noopener noreferrer">
+                <img src="https://aka.ms/deploytoazurebutton" alt="Deploy to Azure" style="max-width: 200px; margin: 1rem 0;">
             </a>
 
             <p style="margin-top: 1rem;">Or use PowerShell:</p>
@@ -469,7 +469,7 @@ New-AzResourceGroup -Name $resourceGroupName -Location $location
 
 New-AzResourceGroupDeployment `
     -ResourceGroupName $resourceGroupName `
-    -TemplateUri "https://raw.githubusercontent.com/microsoft/finops-toolkit/main/src/templates/finops-hub/azuredeploy.json" `
+    -TemplateUri "https://raw.githubusercontent.com/EuphoriaLux/finops-hub-deployment/main/template.json" `
     -hubName $hubName</code></pre>
 
             <h3>Step 3: Verify Deployment</h3>
