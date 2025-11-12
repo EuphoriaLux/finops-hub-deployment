@@ -46,7 +46,6 @@ Before deploying, ensure you have:
 
 - ✅ Active Azure subscription
 - ✅ **Contributor** role on target subscription/resource group
-- ✅ **User Access Administrator** role (if using managed exports)
 - ✅ 15-45 minutes for deployment
 
 ## 🔧 Deployment Methods
@@ -81,9 +80,7 @@ You'll configure these during deployment:
 | `hubName` | Unique hub identifier (used in resource names) | Your company name + "-finops-hub" |
 | `location` | Azure region | "westeurope" or your preferred region |
 | `storageSku` | Storage tier | Premium_LRS (default) |
-| `enableManagedExports` | Auto-create Cost Management exports | true (recommended) |
 | `enablePublicAccess` | Allow public network access | true |
-| `scopesToMonitor` | Azure subscription IDs to monitor | Your subscription IDs (array) |
 
 **Advanced Parameters** (leave as default for standard deployment):
 - `exportRetentionInDays`: Raw export data retention (default: 0 = delete after processing)
@@ -176,13 +173,11 @@ These diagnostic scripts will check:
 
 ### "Insufficient permissions" error
 
-**Required Roles**:
+**Required Role**:
 - **Contributor** role - To create/modify resources
-- **User Access Administrator** role - To assign roles to managed identities
 
-**Solutions**:
-- Request both roles from your Azure administrator
-- Or disable managed exports: set `enableManagedExports` to `false` during deployment
+**Solution**:
+- Request Contributor role from your Azure administrator
 
 ### Resource name conflicts
 - Change the `hubName` parameter to a unique value
