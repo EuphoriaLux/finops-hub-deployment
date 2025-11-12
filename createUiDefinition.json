@@ -55,25 +55,13 @@
             "visible": true
           },
           {
-            "name": "enableManagedExports",
-            "type": "Microsoft.Common.OptionsGroup",
-            "label": "Enable Managed Exports",
-            "defaultValue": "Yes",
-            "toolTip": "Automatically create and manage Cost Management exports. Requires User Access Administrator role.",
-            "constraints": {
-              "allowedValues": [
-                {
-                  "label": "Yes",
-                  "value": true
-                },
-                {
-                  "label": "No",
-                  "value": false
-                }
-              ],
-              "required": true
-            },
-            "visible": true
+            "name": "exportConfigInfo",
+            "type": "Microsoft.Common.InfoBox",
+            "visible": true,
+            "options": {
+              "icon": "Warning",
+              "text": "⚠️ Export Configuration Required\n\nFor CSP subscriptions, Cost Management exports must be configured manually through the Azure Portal after deployment.\n\n📘 Complete setup instructions: https://EuphoriaLux.github.io/finops-hub-deployment/\n\nEstimated time: 5-10 minutes per subscription"
+            }
           }
         ]
       },
@@ -155,7 +143,7 @@
       "hubName": "[basics('hubName')]",
       "storageSku": "[steps('configuration').storageSku]",
       "enableInfrastructureEncryption": "[steps('advanced').enableInfrastructureEncryption]",
-      "enableManagedExports": "[steps('configuration').enableManagedExports]",
+      "enableManagedExports": false,
       "dataExplorerName": "",
       "dataExplorerSku": "Dev(No SLA)_Standard_D11_v2",
       "dataExplorerCapacity": 1,
