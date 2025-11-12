@@ -817,15 +817,15 @@ New-AzResourceGroupDeployment `
                     <label>Output Format</label>
                     <div class="radio-group">
                         <div class="radio-option">
-                            <input type="radio" id="outputPowerShell" name="outputType" value="powershell" checked>
-                            <label for="outputPowerShell" class="radio-option-label">
-                                <strong>PowerShell Script</strong> - Automated export creation (for non-CSP subscriptions)
+                            <input type="radio" id="outputPortal" name="outputType" value="portal" checked>
+                            <label for="outputPortal" class="radio-option-label">
+                                <strong>Portal Instructions</strong> - Step-by-step manual setup (Recommended for CSP)
                             </label>
                         </div>
                         <div class="radio-option">
-                            <input type="radio" id="outputPortal" name="outputType" value="portal">
-                            <label for="outputPortal" class="radio-option-label">
-                                <strong>Portal Instructions</strong> - Step-by-step manual setup (for CSP subscriptions)
+                            <input type="radio" id="outputPowerShell" name="outputType" value="powershell">
+                            <label for="outputPowerShell" class="radio-option-label">
+                                <strong>PowerShell Script</strong> - Automated (for non-CSP subscriptions only)
                             </label>
                         </div>
                     </div>

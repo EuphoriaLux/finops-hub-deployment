@@ -164,8 +164,8 @@ const ArchitectureDiagram = {
 
   // Setup event listeners
   setupEventListeners: function() {
-    // Component click handlers
-    document.querySelectorAll('.architecture-component').forEach(element => {
+    // Component click handlers - use class selector that exists in HTML
+    document.querySelectorAll('.arch-component').forEach(element => {
       element.addEventListener('click', (e) => {
         const componentId = element.getAttribute('data-component');
         this.showComponentDetails(componentId);
@@ -256,11 +256,11 @@ const ArchitectureDiagram = {
     panel.classList.add('visible');
 
     // Highlight the component
-    document.querySelectorAll('.architecture-component').forEach(el => {
+    document.querySelectorAll('.arch-component').forEach(el => {
       el.classList.remove('selected');
     });
 
-    const componentElement = document.querySelector(`[data-component="${componentId}"]`);
+    const componentElement = document.querySelector(`.arch-component[data-component="${componentId}"]`);
     if (componentElement) {
       componentElement.classList.add('selected');
     }
@@ -273,7 +273,7 @@ const ArchitectureDiagram = {
       panel.classList.remove('visible');
     }
 
-    document.querySelectorAll('.architecture-component').forEach(el => {
+    document.querySelectorAll('.arch-component').forEach(el => {
       el.classList.remove('selected');
     });
 
@@ -327,19 +327,26 @@ const ArchitectureDiagram = {
       if (!this.animationRunning) return;
 
       // Clear previous highlights
-      document.querySelectorAll('.flow-arrow').forEach(el => {
-        el.classList.remove('animated');
+      document.querySelectorAll('.arch-component').forEach(el => {
+        el.classList.remove('flow-highlight');
       });
 
-      // Highlight current step
+      // Highlight current step - highlight both source and destination
       const currentFlow = flows[step % flows.length];
-      const flowElements = document.querySelectorAll(
-        `.flow-${currentFlow.from}-to-${currentFlow.to}`
-      );
 
-      flowElements.forEach(el => {
-        el.classList.add('animated');
-      });
+      // Highlight source component
+      const fromElement = document.querySelector(`.arch-component[data-component="${currentFlow.from}"]`);
+      if (fromElement) {
+        fromElement.classList.add('flow-highlight');
+      }
+
+      // After short delay, highlight destination
+      setTimeout(() => {
+        const toElement = document.querySelector(`.arch-component[data-component="${currentFlow.to}"]`);
+        if (toElement) {
+          toElement.classList.add('flow-highlight');
+        }
+      }, 500);
 
       // Show flow description
       this.showFlowDescription(currentFlow);
@@ -347,7 +354,7 @@ const ArchitectureDiagram = {
       step++;
 
       // Continue animation
-      this.animationFrame = setTimeout(animate, 2000); // 2 seconds per step
+      this.animationFrame = setTimeout(animate, 2500); // 2.5 seconds per step
     };
 
     animate();
@@ -362,8 +369,8 @@ const ArchitectureDiagram = {
     }
 
     // Clear highlights
-    document.querySelectorAll('.flow-arrow').forEach(el => {
-      el.classList.remove('animated');
+    document.querySelectorAll('.arch-component').forEach(el => {
+      el.classList.remove('flow-highlight');
     });
 
     // Hide flow description
