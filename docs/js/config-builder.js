@@ -485,22 +485,13 @@ const ConfigBuilder = {
     const templateUri = 'https://raw.githubusercontent.com/EuphoriaLux/finops-hub-deployment/main/template.json';
     const uiDefUri = 'https://raw.githubusercontent.com/EuphoriaLux/finops-hub-deployment/main/createUiDefinition.json';
 
-    // Build parameters
-    const params = new URLSearchParams({
-      hubName: this.config.hubName,
-      location: this.config.region,
-      storageSku: this.config.storageSku,
-      exportRetentionInDays: this.config.exportRetention,
-      ingestionRetentionInMonths: this.config.ingestionRetention,
-      enablePublicAccess: this.config.enablePublicAccess,
-      enableInfrastructureEncryption: this.config.enableInfraEncryption
-    });
+    // NOTE: Azure Portal custom deployment URLs don't support pre-filling parameters directly
+    // The createUiDefinition.json controls the form in the portal
+    // Users will need to fill in the parameters in the portal UI
 
-    if (this.config.dataExplorerName) {
-      params.append('dataExplorerName', this.config.dataExplorerName);
-    }
-
-    const fullUrl = `${baseUrl}${encodeURIComponent(templateUri)}&createUIDefinitionUri=${encodeURIComponent(uiDefUri)}`;
+    // Build the correct Azure Portal URL format
+    // Format: https://portal.azure.com/#create/Microsoft.Template/uri/<template>/createUIDefinitionUri/<uidef>
+    const fullUrl = `${baseUrl}${encodeURIComponent(templateUri)}/createUIDefinitionUri/${encodeURIComponent(uiDefUri)}`;
 
     return fullUrl;
   },
@@ -544,9 +535,16 @@ const ConfigBuilder = {
       <div class="summary-section">
         <h4>Next Steps</h4>
         <ol>
-          <li>Click the button below to open Azure Portal</li>
-          <li>Review the pre-filled parameters</li>
-          <li>Select your Azure subscription and resource group</li>
+          <li>Click the button below to open Azure Portal with the deployment template</li>
+          <li>In the Azure Portal form, enter the parameters from your configuration above:
+            <ul style="margin-top: 0.5rem;">
+              <li><strong>Hub Name:</strong> <code>${this.config.hubName}</code></li>
+              <li><strong>Region:</strong> ${FinOpsUtils.azureRegions.find(r => r.value === this.config.region)?.label || this.config.region}</li>
+              <li><strong>Storage SKU:</strong> ${this.config.storageSku}</li>
+              <li><strong>Retention:</strong> ${this.config.ingestionRetention} months</li>
+            </ul>
+          </li>
+          <li>Select your Azure subscription and create/select a resource group</li>
           <li>Click "Review + Create" then "Create"</li>
           <li>Wait 15-20 minutes for deployment to complete</li>
         </ol>
@@ -559,7 +557,11 @@ const ConfigBuilder = {
       </div>
 
       <div class="alert-info">
-        <strong>ℹ️ Note:</strong> After deployment, you'll need to manually configure Cost Management exports (use the Export Wizard above).
+        <strong>💡 About Pre-Filled Parameters:</strong> The Azure Portal doesn't support pre-filling custom template parameters via URL. The configuration you created above serves as your reference when filling out the deployment form in the portal. Your settings are saved in your browser for easy reference.
+      </div>
+
+      <div class="alert-info">
+        <strong>ℹ️ After Deployment:</strong> You'll need to manually configure Cost Management exports. Use the <a href="#export-wizard" style="color: inherit; text-decoration: underline;">Export Wizard above</a> to generate scripts or instructions.
       </div>
     `;
 

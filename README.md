@@ -94,10 +94,21 @@ You'll configure these during deployment:
 All documentation is available on our comprehensive documentation portal:
 
 ✅ **Complete deployment instructions**
+✅ **Interactive Architecture Diagram** - Visualize component connections and data flow
+✅ **Configuration Builder** - Generate pre-filled deployment parameters with cost estimates
+✅ **Export Configuration Wizard** - Generate PowerShell scripts or portal instructions
 ✅ **Step-by-step export configuration guide**
 ✅ **CSP subscription considerations**
 ✅ **Troubleshooting and diagnostics**
 ✅ **Resource links and references**
+
+### 🆕 Interactive Features
+
+The documentation site now includes powerful interactive tools to help you deploy and configure FinOps Hub:
+
+- **🏗️ Architecture Diagram** - Interactive visualization of all Azure components with clickable elements and animated data flow
+- **⚙️ Configuration Builder** - Calculate costs, validate parameters, and generate customized deployment links
+- **🧙 Export Wizard** - Automatically generate PowerShell scripts or step-by-step portal instructions for Cost Management exports
 
 👉 **[Enable GitHub Pages](GITHUB-PAGES-SETUP.md)** - Instructions to publish the documentation site
 
