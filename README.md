@@ -124,8 +124,51 @@ After deployment, you'll have these resources in your resource group:
 
 ## 🐛 Troubleshooting
 
+### Deployment Script Failures (uploadSettings)
+
+**Error**: `ResourceDeploymentFailure` for `uploadSettings` deployment script
+
+**Most Common Cause**: RBAC propagation delay (90% of cases)
+
+**Symptoms**:
+- Deployment fails with "ResourceDeploymentFailure" for deployment script
+- Error mentions "Authorization failed" or "Forbidden" (403)
+- Happens during "UpdateSettings" phase
+
+**Solution**:
+1. **Wait 10-15 minutes** after the initial failure
+2. **Retry the deployment** using the same parameters
+3. The second attempt usually succeeds (RBAC roles have propagated)
+
+**Why This Happens**:
+Azure RBAC role assignments can take 5-10 minutes to propagate across Azure's infrastructure. The deployment creates a managed identity and assigns it permissions, but the deployment script runs immediately before permissions are fully active.
+
+**Run Diagnostics**:
+```powershell
+# PowerShell
+.\scripts\diagnose-deployment-failure.ps1 -ResourceGroupName "your-rg-name"
+```
+
+```bash
+# Bash/Linux
+./scripts/diagnose-deployment-failure.sh -g your-rg-name
+```
+
+These diagnostic scripts will check:
+- User permissions (Contributor + User Access Administrator)
+- Managed identity existence and role assignments
+- RBAC propagation status
+- Storage account accessibility
+- Detailed deployment error logs
+
 ### "Insufficient permissions" error
-- Ensure you have both **Contributor** + **User Access Administrator** roles
+
+**Required Roles**:
+- **Contributor** role - To create/modify resources
+- **User Access Administrator** role - To assign roles to managed identities
+
+**Solutions**:
+- Request both roles from your Azure administrator
 - Or disable managed exports: set `enableManagedExports` to `false` during deployment
 
 ### Resource name conflicts
@@ -137,7 +180,13 @@ After deployment, you'll have these resources in your resource group:
 - Check the `msexports` container in your storage account for data
 - Verify managed identity has required permissions on your subscriptions
 
-[See full troubleshooting guide](DEPLOYMENT-GUIDE.md)
+### Network/Firewall Issues
+If your storage account has network restrictions:
+- Deployment scripts may not be able to access storage
+- Temporarily allow public network access during deployment
+- Or configure firewall rules to allow Azure services
+
+[See full troubleshooting guide & diagnostic tools](./scripts/)
 
 ## 📚 Additional Resources
 

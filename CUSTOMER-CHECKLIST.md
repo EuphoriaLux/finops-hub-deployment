@@ -184,9 +184,43 @@ Wait 24-48 hours, then check:
 
 ### Common Issues
 
+**Deployment Script Failure (uploadSettings) - MOST COMMON:**
+
+Symptoms:
+- Error: `ResourceDeploymentFailure` for deployment script
+- Error message mentions "Authorization failed", "Forbidden", or "403"
+- Happens during "UpdateSettings" or "Storage" phase
+
+Solution:
+- [ ] **Wait 10-15 minutes** after the initial failure
+- [ ] **Retry the deployment** with the same parameters
+- [ ] The second attempt usually succeeds (RBAC roles have propagated)
+
+Why: Azure RBAC role assignments take 5-10 minutes to propagate. The deployment creates a managed identity and assigns permissions, but the script runs before they're fully active.
+
+**Run Diagnostics:**
+```powershell
+# PowerShell - from the scripts directory
+.\diagnose-deployment-failure.ps1 -ResourceGroupName "rg-finops-hub-prod"
+```
+
+```bash
+# Bash/Linux - from the scripts directory
+./diagnose-deployment-failure.sh -g rg-finops-hub-prod
+```
+
+The diagnostic script will check:
+- [ ] User has required permissions (Contributor + User Access Administrator)
+- [ ] Managed identity was created successfully
+- [ ] Role assignments are in place
+- [ ] RBAC permissions have propagated
+- [ ] Storage account is accessible
+- [ ] Detailed error logs
+
 **Deployment fails with permission error:**
-- [ ] Verified I have Contributor role
-- [ ] Verified I have User Access Administrator role
+- [ ] Verified I have **Contributor** role
+- [ ] Verified I have **User Access Administrator** role
+- [ ] Both roles are required for managed identity role assignments
 - [ ] Alternative: Set `enableManagedExports: false` and create exports manually
 
 **Resource name already exists:**
@@ -197,6 +231,12 @@ Wait 24-48 hours, then check:
 - [ ] Verified subscription has quota for Data Explorer
 - [ ] Requested quota increase if needed
 - [ ] Alternative: Deploy without Data Explorer initially
+
+**Network/Firewall Restrictions:**
+- [ ] Storage account firewall may block deployment scripts
+- [ ] Temporarily allow public access during deployment
+- [ ] Add Azure service IPs to firewall allowlist
+- [ ] Check if private networking is causing issues
 
 **No cost data appearing:**
 - [ ] Waited at least 24 hours (exports run daily)
