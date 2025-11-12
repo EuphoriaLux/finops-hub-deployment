@@ -1,6 +1,10 @@
 # FinOps Hub - Azure Deployment
 
+[![Documentation](https://img.shields.io/badge/📖_Documentation-GitHub_Pages-blue?style=for-the-badge)](https://EuphoriaLux.github.io/finops-hub-deployment/)
+
 Deploy a streamlined FinOps Hub solution to your Azure subscription for cost management and optimization.
+
+> **📘 [View Complete Documentation](https://EuphoriaLux.github.io/finops-hub-deployment/)** - Comprehensive deployment guide, export setup instructions, CSP considerations, and troubleshooting
 
 ## 🚀 Quick Deploy
 
