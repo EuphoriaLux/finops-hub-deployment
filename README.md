@@ -88,7 +88,7 @@ You'll configure these during deployment:
 
 ## 📖 Documentation
 
-### 🌐 **[View Complete Documentation →](https://[your-username].github.io/finops-hub-deployment/)**
+### 🌐 **[View Complete Documentation →](https://EuphoriaLux.github.io/finops-hub-deployment/)**
 
 All documentation is available on our comprehensive documentation portal:
 
