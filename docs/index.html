@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinOps Hub - Deployment Guide</title>
+
+    <!-- External CSS for Interactive Features -->
+    <link rel="stylesheet" href="css/interactive.css">
+
+    <!-- Prism.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
     <style>
         :root {
             --primary-color: #0078d4;
@@ -377,8 +384,10 @@
     <nav>
         <ul>
             <li><a href="#overview">Overview</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#config-builder">Configuration</a></li>
             <li><a href="#deployment">Deployment</a></li>
-            <li><a href="#exports">Export Setup</a></li>
+            <li><a href="#export-wizard">Export Wizard</a></li>
             <li><a href="#csp">CSP Subscriptions</a></li>
             <li><a href="#troubleshooting">Troubleshooting</a></li>
             <li><a href="#resources">Resources</a></li>
@@ -429,6 +438,211 @@
                 <li>Microsoft.CostManagementExports resource provider registered</li>
                 <li>Cost Management Contributor role (for export creation)</li>
             </ul>
+        </section>
+
+        <!-- Architecture Section -->
+        <section id="architecture" class="card interactive-section">
+            <h2>🏗️ Architecture Diagram</h2>
+            <p>Explore the interactive architecture diagram to understand how FinOps Hub components work together to collect, process, and visualize your Azure cost data.</p>
+
+            <div class="architecture-container">
+                <div class="architecture-controls">
+                    <div>
+                        <button id="playAnimation" class="btn btn-primary">▶ Play Data Flow</button>
+                    </div>
+                    <div class="architecture-toggle">
+                        <input type="checkbox" id="toggleDataExplorer">
+                        <label for="toggleDataExplorer">Show Azure Data Explorer (Optional)</label>
+                    </div>
+                    <div id="flowDescription" class="flow-description" style="display: none;"></div>
+                </div>
+
+                <!-- Architecture Grid Layout -->
+                <div class="architecture-grid">
+                    <!-- Row 1: Cost Management -->
+                    <div class="arch-component" data-component="costManagement" style="grid-column: 1; grid-row: 1;">
+                        <div class="arch-icon">💰</div>
+                        <div class="arch-name">Cost Management</div>
+                        <div class="arch-cost">Free</div>
+                    </div>
+
+                    <!-- Row 2: Storage and Event Grid -->
+                    <div class="arch-component" data-component="storage" style="grid-column: 2; grid-row: 2;">
+                        <div class="arch-icon">💾</div>
+                        <div class="arch-name">Storage Account</div>
+                        <div class="arch-cost">$5-10/mo</div>
+                    </div>
+
+                    <div class="arch-component" data-component="eventGrid" style="grid-column: 3; grid-row: 2;">
+                        <div class="arch-icon">⚡</div>
+                        <div class="arch-name">Event Grid</div>
+                        <div class="arch-cost">$0.50/mo</div>
+                    </div>
+
+                    <!-- Row 3: Data Factory and Security -->
+                    <div class="arch-component" data-component="dataFactory" style="grid-column: 2; grid-row: 3;">
+                        <div class="arch-icon">🏭</div>
+                        <div class="arch-name">Data Factory</div>
+                        <div class="arch-cost">$2-5/mo</div>
+                    </div>
+
+                    <div class="arch-component" data-component="keyVault" style="grid-column: 3; grid-row: 3;">
+                        <div class="arch-icon">🔐</div>
+                        <div class="arch-name">Key Vault</div>
+                        <div class="arch-cost">$0.50/mo</div>
+                    </div>
+
+                    <div class="arch-component" data-component="managedIdentity" style="grid-column: 4; grid-row: 3;">
+                        <div class="arch-icon">🔑</div>
+                        <div class="arch-name">Managed Identities</div>
+                        <div class="arch-cost">Free</div>
+                    </div>
+
+                    <!-- Row 4: Optional Data Explorer and Power BI -->
+                    <div class="arch-component optional-adx" data-component="dataExplorer" style="grid-column: 2; grid-row: 4; display: none;">
+                        <div class="arch-icon">📊</div>
+                        <div class="arch-name">Data Explorer</div>
+                        <div class="arch-cost">$150+/mo</div>
+                    </div>
+
+                    <div class="arch-component" data-component="powerBI" style="grid-column: 4; grid-row: 4;">
+                        <div class="arch-icon">📈</div>
+                        <div class="arch-name">Power BI</div>
+                        <div class="arch-cost">Separate License</div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info" style="margin-top: 2rem;">
+                    <strong>💡 Interactive Features:</strong>
+                    <ul>
+                        <li>Click any component to see detailed information</li>
+                        <li>Toggle Data Explorer to see optional deployment</li>
+                        <li>Play animation to visualize data flow</li>
+                        <li>Estimated total cost: <strong id="architectureCost">$8-20/month</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Component Detail Panel (slides in from right) -->
+            <div id="componentDetailPanel" class="component-detail-panel">
+                <button id="closeDetailPanel" class="close-btn" aria-label="Close">×</button>
+                <div id="componentDetailContent"></div>
+            </div>
+        </section>
+
+        <!-- Configuration Builder Section -->
+        <section id="config-builder" class="card interactive-section">
+            <h2>⚙️ Deployment Configuration Builder</h2>
+            <p>Use this interactive tool to configure your FinOps Hub deployment parameters, estimate costs, and generate a pre-filled deployment link.</p>
+
+            <div class="config-builder-form">
+                <!-- Hub Name -->
+                <div class="form-group full-width">
+                    <label for="configHubName">Hub Name *</label>
+                    <input type="text" id="configHubName" placeholder="e.g., contoso-finops" maxlength="24">
+                    <span class="help-text">3-24 characters, lowercase letters and numbers only</span>
+                </div>
+
+                <!-- Region -->
+                <div class="form-group">
+                    <label for="configRegion">Azure Region *</label>
+                    <select id="configRegion"></select>
+                    <span class="help-text">Choose a region close to your primary location</span>
+                </div>
+
+                <!-- Subscription Count -->
+                <div class="form-group">
+                    <label for="configSubscriptionCount">Number of Subscriptions</label>
+                    <input type="number" id="configSubscriptionCount" value="1" min="1" max="1000">
+                    <span class="help-text">For cost estimation purposes</span>
+                </div>
+
+                <!-- Storage SKU -->
+                <div class="form-group full-width">
+                    <label>Storage SKU *</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="skuLRS" name="configStorageSku" value="Premium_LRS" checked>
+                            <div class="radio-option-label">
+                                <label for="skuLRS"><strong>Premium LRS</strong> - Locally Redundant Storage</label>
+                                <div class="radio-option-description">Lower cost, single datacenter redundancy (Recommended for dev/test)</div>
+                            </div>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="skuZRS" name="configStorageSku" value="Premium_ZRS">
+                            <div class="radio-option-label">
+                                <label for="skuZRS"><strong>Premium ZRS</strong> - Zone Redundant Storage</label>
+                                <div class="radio-option-description">Higher availability, zone-redundant (Recommended for production)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Retention Policies -->
+                <div class="form-group">
+                    <label for="configExportRetention">Raw Export Retention (days)</label>
+                    <input type="number" id="configExportRetention" value="0" min="0" max="365">
+                    <span class="help-text">0 = Delete after processing (recommended)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="configIngestionRetention">Processed Data Retention (months)</label>
+                    <input type="number" id="configIngestionRetention" value="13" min="1" max="36">
+                    <span class="help-text">Recommended: 13 months for year-over-year comparison</span>
+                </div>
+
+                <!-- Advanced Options (Collapsible) -->
+                <div class="form-group full-width">
+                    <div id="toggleAdvanced" class="toggle-section">▶ Show Advanced Options</div>
+                    <div id="advancedOptions" style="display: none;">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="configEnablePublicAccess" checked>
+                                Enable Public Network Access
+                            </label>
+                            <span class="help-text">Disable for private endpoint only access</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="configEnableInfraEncryption">
+                                Enable Infrastructure Encryption
+                            </label>
+                            <span class="help-text">Double encryption for compliance requirements</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="configDataExplorerName">Data Explorer Cluster Name (Optional)</label>
+                            <input type="text" id="configDataExplorerName" placeholder="Leave empty to skip">
+                            <span class="help-text">Only needed for large datasets (>$2M monthly spend)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost Estimate -->
+            <div class="cost-estimate-card">
+                <h3>💵 Estimated Monthly Cost</h3>
+                <div class="cost-total" id="estimatedCost">$8.00</div>
+                <div class="cost-breakdown" id="costBreakdown"></div>
+            </div>
+
+            <!-- ROI Estimate -->
+            <div id="roiEstimate"></div>
+
+            <!-- Recommendations -->
+            <div id="configRecommendations" style="display: none;"></div>
+
+            <!-- Resource Names Preview -->
+            <div id="resourceNamePreview"></div>
+
+            <!-- Generate Button -->
+            <div style="text-align: center; margin: 2rem 0;">
+                <button id="generateDeployBtn" class="btn btn-primary btn-lg">Generate Deployment Link</button>
+            </div>
+
+            <!-- Deployment Summary (hidden until generated) -->
+            <div id="deploymentSummary" style="display: none;"></div>
         </section>
 
         <!-- Deployment Section -->
@@ -578,6 +792,61 @@ New-AzResourceGroupDeployment `
 
             <div class="alert alert-info">
                 <strong>First Export Timeline:</strong> After creation, the first export typically completes within 4-8 hours. Data will then be automatically processed by Data Factory.
+            </div>
+        </section>
+
+        <!-- Export Wizard Section -->
+        <section id="export-wizard" class="card interactive-section">
+            <h2>🧙 Export Configuration Wizard</h2>
+            <p>Use this wizard to generate PowerShell scripts or detailed portal instructions for configuring your Cost Management exports.</p>
+
+            <div class="wizard-form">
+                <div class="form-group">
+                    <label for="wizardHubName">Hub Name *</label>
+                    <input type="text" id="wizardHubName" placeholder="e.g., contoso-finops" maxlength="24">
+                    <span class="help-text">The same hub name you used during deployment</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="wizardSubscriptionIds">Subscription IDs *</label>
+                    <textarea id="wizardSubscriptionIds" rows="5" placeholder="Enter subscription IDs (one per line or comma-separated)&#10;e.g.,&#10;12345678-1234-1234-1234-123456789012&#10;87654321-4321-4321-4321-210987654321"></textarea>
+                    <span class="help-text">Enter one or more Azure subscription IDs</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Output Format</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="outputPowerShell" name="outputType" value="powershell" checked>
+                            <label for="outputPowerShell" class="radio-option-label">
+                                <strong>PowerShell Script</strong> - Automated export creation (for non-CSP subscriptions)
+                            </label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="outputPortal" name="outputType" value="portal">
+                            <label for="outputPortal" class="radio-option-label">
+                                <strong>Portal Instructions</strong> - Step-by-step manual setup (for CSP subscriptions)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" id="generateExportBtn" class="btn btn-primary">Generate Configuration</button>
+            </div>
+
+            <!-- Output Area (hidden until generated) -->
+            <div id="wizardOutput" class="output-area" style="display: none;">
+                <pre><code id="wizardGeneratedCode" class="language-powershell"></code></pre>
+                <button type="button" id="copyExportBtn" class="btn btn-success">Copy to Clipboard</button>
+            </div>
+
+            <div class="alert alert-info" style="margin-top: 1.5rem;">
+                <strong>💡 Tips:</strong>
+                <ul>
+                    <li>Use PowerShell script for <strong>non-CSP subscriptions</strong> (EA, MCA, Pay-as-you-go)</li>
+                    <li>Use Portal instructions for <strong>CSP subscriptions</strong> (API restrictions apply)</li>
+                    <li>Your configuration is saved locally for convenience</li>
+                </ul>
             </div>
         </section>
 
@@ -776,11 +1045,21 @@ New-AzResourceGroupDeployment `
         <div class="container">
             <p>&copy; 2025 FinOps Hub Deployment Guide</p>
             <p>
-                <a href="https://github.com/microsoft/finops-toolkit" target="_blank">GitHub Repository</a> |
-                <a href="https://learn.microsoft.com/en-us/cloud-computing/finops/toolkit/finops-toolkit-overview" target="_blank">Official Documentation</a> |
-                <a href="https://focus.finops.org/" target="_blank">FOCUS Specification</a>
+                <a href="https://github.com/microsoft/finops-toolkit" target="_blank" rel="noopener">GitHub Repository</a> |
+                <a href="https://learn.microsoft.com/en-us/cloud-computing/finops/toolkit/finops-toolkit-overview" target="_blank" rel="noopener">Official Documentation</a> |
+                <a href="https://focus.finops.org/" target="_blank" rel="noopener">FOCUS Specification</a>
             </p>
         </div>
     </footer>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
+
+    <!-- Interactive Feature Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/architecture-diagram.js"></script>
+    <script src="js/config-builder.js"></script>
+    <script src="js/export-wizard.js"></script>
 </body>
 </html>
