@@ -439,9 +439,12 @@
                 <li>Azure subscription with Owner or Contributor role</li>
                 <li><strong>Microsoft.EventGrid resource provider registered (REQUIRED BEFORE DEPLOYMENT)</strong></li>
                 <li>Microsoft.Storage resource provider registered</li>
-                <li>Microsoft.CostManagementExports resource provider registered</li>
-                <li>Cost Management Contributor role (for export creation)</li>
+                <li>Cost Management Contributor role (for manual export creation via Portal)</li>
             </ul>
+
+            <div class="alert alert-info">
+                <strong>ℹ️ CSP-Optimized Template:</strong> This template is designed for CSP and standard Azure subscriptions. <code>Microsoft.CostManagementExports</code> provider is <strong>NOT required</strong> - Cost Management exports must be created manually via Azure Portal (automated export creation is disabled via <code>enableManagedExports: false</code>).
+            </div>
 
             <h4>Register Event Grid Provider</h4>
             <pre><code class="language-powershell"># Register Event Grid provider
@@ -675,8 +678,8 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
             <pre><code># PowerShell
 Register-AzResourceProvider -ProviderNamespace Microsoft.EventGrid  # ⚠️ CRITICAL - Must be registered BEFORE deployment
 Register-AzResourceProvider -ProviderNamespace Microsoft.Storage
-Register-AzResourceProvider -ProviderNamespace Microsoft.CostManagementExports
 Register-AzResourceProvider -ProviderNamespace Microsoft.DataFactory
+# NOTE: Microsoft.CostManagementExports is NOT required (template uses enableManagedExports: false)
 
 # Verify Event Grid is registered (wait for "Registered" status)
 Get-AzResourceProvider -ProviderNamespace Microsoft.EventGrid | Select-Object ProviderNamespace, RegistrationState
@@ -684,8 +687,8 @@ Get-AzResourceProvider -ProviderNamespace Microsoft.EventGrid | Select-Object Pr
 # Azure CLI
 az provider register --namespace Microsoft.EventGrid  # ⚠️ CRITICAL - Must be registered BEFORE deployment
 az provider register --namespace Microsoft.Storage
-az provider register --namespace Microsoft.CostManagementExports
 az provider register --namespace Microsoft.DataFactory
+# NOTE: Microsoft.CostManagementExports is NOT required (template uses enableManagedExports: false)
 
 # Verify Event Grid is registered (wait for "Registered" status)
 az provider show --namespace Microsoft.EventGrid --query "registrationState" --output tsv</code></pre>
