@@ -350,6 +350,37 @@
             text-decoration: underline;
         }
 
+        /* User Path Selection Styles */
+        .user-path-selector .feature-box {
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .user-path-selector .feature-box:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,120,212,0.3);
+        }
+
+        .user-path-selector .feature-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .user-path-selector .feature-box ul li {
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .user-path-selector .feature-box ul li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             header h1 {
                 font-size: 1.8rem;
@@ -383,20 +414,63 @@
 
     <nav>
         <ul>
+            <li><a href="#" onclick="showUserPath('selection'); return false;">🏠 Start</a></li>
             <li><a href="#overview">Overview</a></li>
             <li><a href="#architecture">Architecture</a></li>
             <li><a href="#config-builder">Configuration</a></li>
-            <li><a href="#deployment">Deployment</a></li>
+            <li><a href="#deployment-lambda">Deploy (Portal)</a></li>
+            <li><a href="#deployment-developer">Deploy (Script)</a></li>
             <li><a href="#export-wizard">Export Wizard</a></li>
-            <li><a href="#csp">CSP Subscriptions</a></li>
+            <li><a href="#csp">CSP Info</a></li>
             <li><a href="#troubleshooting">Troubleshooting</a></li>
-            <li><a href="#resources">Resources</a></li>
         </ul>
     </nav>
 
     <main class="container">
+        <!-- User Path Selection Section -->
+        <section id="user-path-selection" class="card user-path-selector" style="text-align: center; padding: 3rem 2rem;">
+            <h2>Choose Your Deployment Path</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">Select the path that best describes your technical background</p>
+
+            <div class="grid" style="gap: 3rem; max-width: 900px; margin: 0 auto;">
+                <div class="feature-box" style="cursor: pointer; padding: 2rem;" onclick="showUserPath('lambda')">
+                    <div class="icon" style="font-size: 4rem;">👤</div>
+                    <h3 style="color: var(--primary-color); font-size: 1.8rem;">Business User</h3>
+                    <p style="font-size: 1.1rem; margin: 1rem 0;">I prefer using the Azure Portal</p>
+                    <ul style="text-align: left; margin: 1rem 0;">
+                        <li>Point-and-click deployment</li>
+                        <li>Visual step-by-step guide</li>
+                        <li>No coding or scripting required</li>
+                        <li>Portal-based configuration</li>
+                    </ul>
+                    <button class="btn btn-primary btn-lg" style="margin-top: 1rem;">I'm a Business User</button>
+                </div>
+                <div class="feature-box" style="cursor: pointer; padding: 2rem;" onclick="showUserPath('developer')">
+                    <div class="icon" style="font-size: 4rem;">👨‍💻</div>
+                    <h3 style="color: var(--primary-color); font-size: 1.8rem;">Developer/IT Pro</h3>
+                    <p style="font-size: 1.1rem; margin: 1rem 0;">I'm comfortable with PowerShell/CLI</p>
+                    <ul style="text-align: left; margin: 1rem 0;">
+                        <li>PowerShell & Azure CLI scripts</li>
+                        <li>Automated deployment</li>
+                        <li>Infrastructure as Code</li>
+                        <li>Scripted configuration</li>
+                    </ul>
+                    <button class="btn btn-primary btn-lg" style="margin-top: 1rem;">I'm a Developer</button>
+                </div>
+            </div>
+
+            <div class="alert alert-info" style="margin-top: 2rem; text-align: left;">
+                <strong>Not sure which path to choose?</strong><br>
+                If you're comfortable using PowerShell or Azure CLI, choose the Developer path for faster automation. Otherwise, the Business User path provides a more guided, visual experience through the Azure Portal.
+            </div>
+        </section>
+
         <!-- Overview Section -->
-        <section id="overview" class="card">
+        <section id="overview" class="card" style="display: none;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button onclick="showUserPath('selection')" class="btn btn-primary" style="font-size: 0.9rem;">← Change Deployment Path</button>
+            </div>
+
             <h2>Overview</h2>
             <p>Welcome to the FinOps Hub deployment guide. This comprehensive documentation will help you deploy and configure Microsoft's FinOps Hub solution with FOCUS 1.0 cost exports.</p>
 
@@ -664,22 +738,217 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
             <div id="deploymentSummary" style="display: none;"></div>
         </section>
 
-        <!-- Deployment Section -->
-        <section id="deployment" class="card">
-            <h2>Deployment Steps</h2>
-
-            <div class="alert alert-warning">
-                <strong>Important:</strong> Before deploying, ensure the required resource providers are registered in your subscription.
+        <!-- Business User Deployment Section -->
+        <section id="deployment-lambda" class="card user-path-content lambda-content" style="display: none;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button type="button" onclick="showUserPath('selection')" class="btn btn-primary" style="font-size: 0.9rem;">← Change Deployment Path</button>
             </div>
+
+            <h2>📖 Business User Deployment Guide</h2>
+            <p class="alert alert-info">This guide will walk you through deploying FinOps Hub using the Azure Portal - no scripting or coding required!</p>
+
+            <h3>📋 Prerequisites Checklist</h3>
+            <div class="alert alert-warning">
+                <strong>Before you begin, ensure you have:</strong>
+                <ul>
+                    <li>✅ Access to Azure Portal (<a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer">portal.azure.com</a>)</li>
+                    <li>✅ Contributor role on your Azure subscription</li>
+                    <li>✅ 20-30 minutes of time</li>
+                </ul>
+            </div>
+
+            <h3>Step 1: Register Event Grid Provider (CRITICAL)</h3>
+            <div class="alert alert-danger">
+                <strong>⚠️ IMPORTANT:</strong> You must complete this step BEFORE deploying, or automatic processing won't work!
+            </div>
+
+            <ol class="steps">
+                <li>
+                    <strong>Open Azure Portal</strong>
+                    <p>Go to <a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer">https://portal.azure.com</a> and sign in</p>
+                </li>
+                <li>
+                    <strong>Navigate to Subscriptions</strong>
+                    <p>In the search bar at the top, type "Subscriptions" and click on it</p>
+                </li>
+                <li>
+                    <strong>Select Your Subscription</strong>
+                    <p>Click on the subscription where you want to deploy FinOps Hub</p>
+                </li>
+                <li>
+                    <strong>Open Resource Providers</strong>
+                    <p>In the left menu, scroll down and click "Resource providers"</p>
+                </li>
+                <li>
+                    <strong>Find and Register Event Grid</strong>
+                    <p>In the search box, type "Microsoft.EventGrid"</p>
+                    <p>If the status shows "NotRegistered", click on it and then click "Register" at the top</p>
+                    <p><strong>Wait 1-2 minutes</strong> until the status changes to "Registered"</p>
+                </li>
+            </ol>
+
+            <div class="alert alert-success">
+                <strong>✅ Verification:</strong> The status should now show "Registered". You can proceed to the next step.
+            </div>
+
+            <h3>Step 2: Deploy FinOps Hub</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Click Deploy to Azure Button</strong>
+                    <p>Click the button below to open the deployment form:</p>
+                    <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2Ftemplate.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2FcreateUiDefinition.json%3Ft%3D1762981499" target="_blank" rel="noopener noreferrer">
+                        <img src="https://aka.ms/deploytoazurebutton" alt="Deploy to Azure" style="max-width: 200px; margin: 1rem 0;">
+                    </a>
+                </li>
+                <li>
+                    <strong>Fill in Basic Information</strong>
+                    <ul>
+                        <li><strong>Subscription:</strong> Select your Azure subscription</li>
+                        <li><strong>Resource Group:</strong> Create a new one (e.g., "rg-finops-hub") or select existing</li>
+                        <li><strong>Region:</strong> Choose a location close to you (e.g., "West Europe")</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Configure Hub Settings</strong>
+                    <ul>
+                        <li><strong>Hub Name:</strong> Enter a unique name (3-24 characters, lowercase letters and numbers only)</li>
+                        <li>Example: "contoso-finops" or "mycompany-hub"</li>
+                        <li><strong>Storage SKU:</strong> Keep default "Premium_LRS" (recommended for most users)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Review Advanced Settings</strong>
+                    <p>You can leave these at their default values:</p>
+                    <ul>
+                        <li>Export Retention: 0 days (deletes raw files after processing to save costs)</li>
+                        <li>Ingestion Retention: 13 months (keeps processed data for year-over-year comparison)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Start Deployment</strong>
+                    <p>Click "Review + create" at the bottom</p>
+                    <p>Review the summary and click "Create"</p>
+                </li>
+            </ol>
+
+            <div class="alert alert-info">
+                <strong>⏱️ Deployment Time:</strong> The deployment will take 10-15 minutes. You can close the browser and come back later - it will continue in the background.
+            </div>
+
+            <h3>Step 3: Create Cost Management Exports</h3>
+            <div class="alert alert-warning">
+                <strong>Manual Setup Required:</strong> After deployment completes, you need to configure cost exports for each subscription you want to monitor.
+            </div>
+
+            <ol class="steps">
+                <li>
+                    <strong>Navigate to Cost Management</strong>
+                    <p>In Azure Portal, go to <a href="https://portal.azure.com/#view/Microsoft_Azure_CostManagement/Menu/~/exports" target="_blank" rel="noopener noreferrer">Cost Management → Exports</a></p>
+                </li>
+                <li>
+                    <strong>Select Your Subscription</strong>
+                    <p>At the top, use the "Scope" selector to choose the subscription you want to export costs from</p>
+                </li>
+                <li>
+                    <strong>Create New Export</strong>
+                    <p>Click "+ Create" button at the top</p>
+                </li>
+                <li>
+                    <strong>Configure Export Basics</strong>
+                    <ul>
+                        <li><strong>Export name:</strong> <code>ftk-[your-hub-name]-focus</code></li>
+                        <li><strong>Metric:</strong> Select "Cost and usage details (FOCUS)"</li>
+                        <li><strong>Dataset version:</strong> Select "1.0"</li>
+                        <li><strong>Export type:</strong> Select "Daily export of month-to-date costs"</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Configure Storage Destination</strong>
+                    <ul>
+                        <li><strong>Storage account:</strong> Select your FinOps Hub storage account (starts with "finopshub")</li>
+                        <li><strong>Container:</strong> Type "msexports" (or select if visible)</li>
+                        <li><strong>Directory:</strong> Type "subscriptions/" followed by your subscription ID</li>
+                    </ul>
+                    <p><em>Tip: You can find your subscription ID in the Azure Portal under "Subscriptions"</em></p>
+                </li>
+                <li>
+                    <strong>Configure File Format</strong>
+                    <ul>
+                        <li><strong>File format:</strong> Select "Parquet"</li>
+                        <li><strong>Compression type:</strong> Select "Snappy"</li>
+                        <li><strong>File partitioning:</strong> Check the box to enable it</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Review and Create</strong>
+                    <p>Click "Create" at the bottom</p>
+                </li>
+                <li>
+                    <strong>Repeat for Additional Subscriptions</strong>
+                    <p>If you want to monitor multiple subscriptions, repeat steps 2-7 for each one</p>
+                </li>
+            </ol>
+
+            <div class="alert alert-success">
+                <strong>✅ First Export Timeline:</strong> Your first cost export will run within 4-8 hours. After that, it runs daily automatically.
+            </div>
+
+            <h3>Step 4: Verify Deployment</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Check Resource Group</strong>
+                    <p>In Azure Portal, navigate to your resource group</p>
+                    <p>You should see these resources:</p>
+                    <ul>
+                        <li>Storage Account (starts with "finopshub")</li>
+                        <li>Data Factory (contains "engine")</li>
+                        <li>Event Grid System Topic (ends with "-events")</li>
+                        <li>Key Vault</li>
+                        <li>Managed Identities</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Follow Post-Deployment Checklist</strong>
+                    <p>Review the <a href="../POST-DEPLOYMENT-CHECKLIST.md" target="_blank">Post-Deployment Checklist</a> to ensure everything is configured correctly</p>
+                </li>
+            </ol>
+
+            <h3>🎉 Next Steps</h3>
+            <div class="alert alert-success">
+                <strong>Congratulations!</strong> Your FinOps Hub is now deployed and configured.
+                <ul>
+                    <li>Wait 4-8 hours for your first cost export to complete</li>
+                    <li>Data will be automatically processed by Data Factory</li>
+                    <li>Connect Power BI to visualize your cost data</li>
+                </ul>
+            </div>
+
+            <p><a href="#troubleshooting" class="btn btn-primary">Troubleshooting Guide →</a></p>
+        </section>
+
+        <!-- Developer Deployment Section -->
+        <section id="deployment-developer" class="card user-path-content developer-content" style="display: none;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button type="button" onclick="showUserPath('selection')" class="btn btn-primary" style="font-size: 0.9rem;">← Change Deployment Path</button>
+            </div>
+
+            <h2>💻 Developer Deployment Guide</h2>
+            <p class="alert alert-info">This guide provides PowerShell and Azure CLI scripts for automated deployment and configuration.</p>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Azure PowerShell (Az module) or Azure CLI installed</li>
+                <li>Contributor role on target subscription</li>
+                <li>PowerShell 7+ or Bash shell</li>
+            </ul>
 
             <h3>Step 1: Register Resource Providers</h3>
             <p>Register the required Azure resource providers:</p>
 
-            <pre><code># PowerShell
+            <pre><code class="language-powershell"># PowerShell
 Register-AzResourceProvider -ProviderNamespace Microsoft.EventGrid  # ⚠️ CRITICAL - Must be registered BEFORE deployment
 Register-AzResourceProvider -ProviderNamespace Microsoft.Storage
 Register-AzResourceProvider -ProviderNamespace Microsoft.DataFactory
-# NOTE: Microsoft.CostManagementExports is NOT required (template uses enableManagedExports: false)
 
 # Verify Event Grid is registered (wait for "Registered" status)
 Get-AzResourceProvider -ProviderNamespace Microsoft.EventGrid | Select-Object ProviderNamespace, RegistrationState
@@ -697,42 +966,113 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
                 <strong>⚠️ CRITICAL:</strong> Wait until <code>Microsoft.EventGrid</code> shows status "Registered" before proceeding to deployment. If you deploy before Event Grid is registered, the Event Grid System Topic won't be created and automatic processing will NOT work.
             </div>
 
-            <h3>Step 2: Deploy the ARM Template</h3>
+            <h3>Step 2: Deploy via Script</h3>
 
-            <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2Ftemplate.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2FcreateUiDefinition.json%3Ft%3D1762981499" target="_blank" rel="noopener noreferrer">
-                <img src="https://aka.ms/deploytoazurebutton" alt="Deploy to Azure" style="max-width: 200px; margin: 1rem 0;">
-            </a>
-
-            <p style="margin-top: 1rem;">Or use PowerShell:</p>
-
-            <pre><code># Deploy via PowerShell
-$resourceGroupName = "finhub-rg"
+            <h4>Option A: PowerShell</h4>
+            <pre><code class="language-powershell"># Set deployment parameters
+$resourceGroupName = "rg-finops-hub"
 $location = "westeurope"
-$hubName = "your-finops-hub"
+$hubName = "mycompany-finops"  # 3-24 characters, lowercase letters and numbers only
 
+# Create resource group
 New-AzResourceGroup -Name $resourceGroupName -Location $location
 
+# Deploy template
 New-AzResourceGroupDeployment `
+    -Name "finops-hub-deployment" `
     -ResourceGroupName $resourceGroupName `
     -TemplateUri "https://raw.githubusercontent.com/EuphoriaLux/finops-hub-deployment/main/template.json" `
-    -hubName $hubName</code></pre>
+    -hubName $hubName `
+    -Verbose
 
-            <h3>Step 3: Verify Deployment</h3>
-            <ol class="steps">
-                <li>Navigate to the Azure Portal</li>
-                <li>Open your resource group</li>
-                <li>Verify the following resources exist:
-                    <ul>
-                        <li>Storage Account (for cost data)</li>
-                        <li>Data Factory (for data processing)</li>
-                        <li>Deployment scripts (temporary resources)</li>
-                    </ul>
-                </li>
-            </ol>
+# Monitor deployment progress
+Get-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -Name "finops-hub-deployment"</code></pre>
+
+            <h4>Option B: Azure CLI</h4>
+            <pre><code class="language-bash"># Set deployment parameters
+RESOURCE_GROUP="rg-finops-hub"
+LOCATION="westeurope"
+HUB_NAME="mycompany-finops"  # 3-24 characters, lowercase letters and numbers only
+
+# Create resource group
+az group create --name $RESOURCE_GROUP --location $LOCATION
+
+# Deploy template
+az deployment group create \
+  --name finops-hub-deployment \
+  --resource-group $RESOURCE_GROUP \
+  --template-uri "https://raw.githubusercontent.com/EuphoriaLux/finops-hub-deployment/main/template.json" \
+  --parameters hubName=$HUB_NAME \
+  --verbose
+
+# Monitor deployment
+az deployment group show \
+  --name finops-hub-deployment \
+  --resource-group $RESOURCE_GROUP \
+  --query "properties.provisioningState"</code></pre>
+
+            <h4>Option C: Portal (Deploy to Azure Button)</h4>
+            <p>Prefer visual deployment? Use the button below:</p>
+            <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2Ftemplate.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2FcreateUiDefinition.json%3Ft%3D1762981499" target="_blank" rel="noopener noreferrer">
+                <img src="https://aka.ms/deploytoazurebutton" alt="Deploy to Azure">
+            </a>
+
+            <div class="alert alert-info">
+                <strong>⏱️ Deployment Time:</strong> 10-15 minutes. You can monitor progress using the commands above or in the Azure Portal.
+            </div>
+
+            <h3>Step 3: Automated Export Configuration (Non-CSP Only)</h3>
+            <div class="alert alert-warning">
+                <strong>Note:</strong> This automated approach works for EA, MCA, and Pay-as-you-go subscriptions. For CSP subscriptions, you must use the Export Wizard below for portal-based setup.
+            </div>
+
+            <p>Use the Export Wizard to generate a PowerShell script for your subscriptions:</p>
+            <p><a href="#export-wizard" class="btn btn-primary">Go to Export Wizard →</a></p>
+
+            <h3>Step 4: Verify Deployment</h3>
+            <pre><code class="language-powershell"># PowerShell - Check deployed resources
+Get-AzResource -ResourceGroupName $resourceGroupName | Select-Object Name, ResourceType
+
+# Verify Event Grid System Topic exists
+Get-AzEventGridSystemTopic -ResourceGroupName $resourceGroupName
+
+# Check Data Factory trigger status
+$dataFactoryName = (Get-AzDataFactoryV2 -ResourceGroupName $resourceGroupName).DataFactoryName
+Get-AzDataFactoryV2Trigger -ResourceGroupName $resourceGroupName -DataFactoryName $dataFactoryName</code></pre>
+
+            <pre><code class="language-bash"># Azure CLI - Check deployed resources
+az resource list --resource-group $RESOURCE_GROUP --output table
+
+# Verify Event Grid System Topic exists
+az eventgrid system-topic list --resource-group $RESOURCE_GROUP --output table
+
+# Check Data Factory trigger status
+DATA_FACTORY=$(az datafactory list --resource-group $RESOURCE_GROUP --query "[0].name" -o tsv)
+az datafactory trigger list --resource-group $RESOURCE_GROUP --factory-name $DATA_FACTORY --output table</code></pre>
 
             <div class="alert alert-success">
-                <strong>Deployment Time:</strong> The initial deployment typically takes 10-15 minutes. Deployment script resources are temporary and will clean up automatically.
+                <strong>✅ Success Indicators:</strong>
+                <ul>
+                    <li>Event Grid System Topic exists (name ends with "-events")</li>
+                    <li>Data Factory has active triggers</li>
+                    <li>Storage account has "msexports" and "ingestion" containers</li>
+                </ul>
+                See the <a href="../POST-DEPLOYMENT-CHECKLIST.md" target="_blank">Post-Deployment Checklist</a> for detailed verification.
             </div>
+
+            <h3>🎉 Next Steps</h3>
+            <ul>
+                <li>Configure Cost Management exports (use Export Wizard below)</li>
+                <li>Wait 4-8 hours for first export to complete</li>
+                <li>Connect Power BI for visualization</li>
+                <li>Set up alerts and monitoring</li>
+            </ul>
+        </section>
+
+        <!-- Original Deployment Section (hidden, kept for reference) -->
+        <section id="deployment" class="card" style="display: none;">
+            <h2>Deployment Steps</h2>
+            <p class="alert alert-info">Please select your deployment path above (Business User or Developer) for tailored instructions.</p>
         </section>
 
         <!-- Export Setup Section -->
@@ -1136,5 +1476,76 @@ az eventgrid system-topic create `
     <script src="js/architecture-diagram.js"></script>
     <script src="js/config-builder.js"></script>
     <script src="js/export-wizard.js"></script>
+
+    <!-- User Path Selection Script -->
+    <script>
+        // User path selection functionality
+        function showUserPath(path) {
+            // Get all sections
+            const selectionSection = document.getElementById('user-path-selection');
+            const overviewSection = document.getElementById('overview');
+            const lambdaDeploySection = document.getElementById('deployment-lambda');
+            const devDeploySection = document.getElementById('deployment-developer');
+            const originalDeploySection = document.getElementById('deployment');
+
+            // Hide all sections first
+            if (selectionSection) selectionSection.style.display = 'none';
+            if (overviewSection) overviewSection.style.display = 'none';
+            if (lambdaDeploySection) lambdaDeploySection.style.display = 'none';
+            if (devDeploySection) devDeploySection.style.display = 'none';
+
+            // Show relevant sections based on path
+            if (path === 'selection') {
+                if (selectionSection) selectionSection.style.display = 'block';
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (path === 'lambda') {
+                if (overviewSection) overviewSection.style.display = 'block';
+                if (lambdaDeploySection) lambdaDeploySection.style.display = 'block';
+                // Scroll to deployment section
+                setTimeout(() => {
+                    lambdaDeploySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+                // Store preference
+                localStorage.setItem('finops-user-path', 'lambda');
+            } else if (path === 'developer') {
+                if (overviewSection) overviewSection.style.display = 'block';
+                if (devDeploySection) devDeploySection.style.display = 'block';
+                // Scroll to deployment section
+                setTimeout(() => {
+                    devDeploySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+                // Store preference
+                localStorage.setItem('finops-user-path', 'developer');
+            }
+        }
+
+        // Check if user has a saved preference on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedPath = localStorage.getItem('finops-user-path');
+
+            // Check if URL has a hash that might indicate section navigation
+            const hash = window.location.hash;
+
+            if (hash && hash !== '#overview' && hash !== '#user-path-selection') {
+                // User is navigating to a specific section, show both paths
+                const overviewSection = document.getElementById('overview');
+                const lambdaDeploySection = document.getElementById('deployment-lambda');
+                const devDeploySection = document.getElementById('deployment-developer');
+                const selectionSection = document.getElementById('user-path-selection');
+
+                if (selectionSection) selectionSection.style.display = 'none';
+                if (overviewSection) overviewSection.style.display = 'block';
+                if (lambdaDeploySection) lambdaDeploySection.style.display = 'block';
+                if (devDeploySection) devDeploySection.style.display = 'block';
+            } else if (savedPath) {
+                // User has a saved preference
+                showUserPath(savedPath);
+            } else {
+                // New user, show selection
+                showUserPath('selection');
+            }
+        });
+    </script>
 </body>
 </html>
