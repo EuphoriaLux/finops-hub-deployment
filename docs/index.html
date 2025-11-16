@@ -534,7 +534,11 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
         </section>
 
         <!-- Architecture Section -->
-        <section id="architecture" class="card interactive-section">
+        <section id="architecture" class="card interactive-section" style="display: none;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button type="button" onclick="showUserPath('selection')" class="btn btn-primary" style="font-size: 0.9rem;">← Change Deployment Path</button>
+            </div>
+
             <h2>🏗️ Architecture Diagram</h2>
             <p>Explore the interactive architecture diagram to understand how FinOps Hub components work together to collect, process, and visualize your Azure cost data.</p>
 
@@ -624,7 +628,11 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
         </section>
 
         <!-- Configuration Builder Section -->
-        <section id="config-builder" class="card interactive-section">
+        <section id="config-builder" class="card interactive-section" style="display: none;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button type="button" onclick="showUserPath('selection')" class="btn btn-primary" style="font-size: 0.9rem;">← Change Deployment Path</button>
+            </div>
+
             <h2>⚙️ Deployment Configuration Builder</h2>
             <p>Use this interactive tool to plan your FinOps Hub deployment parameters, estimate costs in real-time, and get a deployment link with your configuration as a reference. Your settings are saved locally for easy reference when deploying.</p>
 
@@ -745,9 +753,17 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
             </div>
 
             <h2>📖 Business User Deployment Guide</h2>
-            <p class="alert alert-info">This guide will walk you through deploying FinOps Hub using the Azure Portal - no scripting or coding required!</p>
+            <p class="alert alert-info">
+                <strong>Welcome!</strong> This guide will walk you through deploying FinOps Hub using the Azure Portal - no scripting or coding required!
+                Follow these 4 simple steps to get started.
+            </p>
 
-            <h3>📋 Prerequisites Checklist</h3>
+            <div style="background: linear-gradient(135deg, var(--primary-color) 0%, #005a9e 100%); color: white; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+                <h3 style="color: white; margin: 0; border: none; padding: 0;">Quick Overview</h3>
+                <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Total Time: ~30 minutes | Difficulty: Easy | Prerequisites: Azure Portal Access</p>
+            </div>
+
+            <h3 style="border-left: 4px solid var(--primary-color); padding-left: 1rem; background: var(--code-bg); padding: 1rem; border-radius: 4px;">📋 Step 0: Prerequisites Checklist</h3>
             <div class="alert alert-warning">
                 <strong>Before you begin, ensure you have:</strong>
                 <ul>
@@ -757,7 +773,9 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
                 </ul>
             </div>
 
-            <h3>Step 1: Register Event Grid Provider (CRITICAL)</h3>
+            <hr style="margin: 3rem 0; border: none; border-top: 2px solid var(--border-color);">
+
+            <h3 style="border-left: 4px solid var(--danger-color); padding-left: 1rem; background: #fff3cd; padding: 1rem; border-radius: 4px;">⚡ Step 1: Register Event Grid Provider (CRITICAL)</h3>
             <div class="alert alert-danger">
                 <strong>⚠️ IMPORTANT:</strong> You must complete this step BEFORE deploying, or automatic processing won't work!
             </div>
@@ -791,7 +809,9 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
                 <strong>✅ Verification:</strong> The status should now show "Registered". You can proceed to the next step.
             </div>
 
-            <h3>Step 2: Deploy FinOps Hub</h3>
+            <hr style="margin: 3rem 0; border: none; border-top: 2px solid var(--border-color);">
+
+            <h3 style="border-left: 4px solid var(--primary-color); padding-left: 1rem; background: var(--code-bg); padding: 1rem; border-radius: 4px;">🚀 Step 2: Deploy FinOps Hub</h3>
             <ol class="steps">
                 <li>
                     <strong>Click Deploy to Azure Button</strong>
@@ -835,7 +855,9 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
                 <strong>⏱️ Deployment Time:</strong> The deployment will take 10-15 minutes. You can close the browser and come back later - it will continue in the background.
             </div>
 
-            <h3>Step 3: Create Cost Management Exports</h3>
+            <hr style="margin: 3rem 0; border: none; border-top: 2px solid var(--border-color);">
+
+            <h3 style="border-left: 4px solid var(--success-color); padding-left: 1rem; background: var(--code-bg); padding: 1rem; border-radius: 4px;">📊 Step 3: Create Cost Management Exports</h3>
             <div class="alert alert-warning">
                 <strong>Manual Setup Required:</strong> After deployment completes, you need to configure cost exports for each subscription you want to monitor.
             </div>
@@ -893,7 +915,9 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
                 <strong>✅ First Export Timeline:</strong> Your first cost export will run within 4-8 hours. After that, it runs daily automatically.
             </div>
 
-            <h3>Step 4: Verify Deployment</h3>
+            <hr style="margin: 3rem 0; border: none; border-top: 2px solid var(--border-color);">
+
+            <h3 style="border-left: 4px solid var(--success-color); padding-left: 1rem; background: var(--code-bg); padding: 1rem; border-radius: 4px;">✅ Step 4: Verify Deployment</h3>
             <ol class="steps">
                 <li>
                     <strong>Check Resource Group</strong>
@@ -923,7 +947,13 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
                 </ul>
             </div>
 
-            <p><a href="#troubleshooting" class="btn btn-primary">Troubleshooting Guide →</a></p>
+            <div style="text-align: center; margin: 2rem 0; padding: 2rem; background: var(--code-bg); border-radius: 8px;">
+                <h4>Need Help?</h4>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <a href="#troubleshooting" class="btn btn-primary">View Troubleshooting →</a>
+                    <a href="../POST-DEPLOYMENT-CHECKLIST.md" class="btn btn-success" target="_blank">Post-Deployment Checklist →</a>
+                </div>
+            </div>
         </section>
 
         <!-- Developer Deployment Section -->
@@ -933,9 +963,17 @@ az provider show --namespace Microsoft.EventGrid --query "registrationState" --o
             </div>
 
             <h2>💻 Developer Deployment Guide</h2>
-            <p class="alert alert-info">This guide provides PowerShell and Azure CLI scripts for automated deployment and configuration.</p>
+            <p class="alert alert-info">
+                <strong>Welcome Developer!</strong> This guide provides PowerShell and Azure CLI scripts for automated deployment and configuration.
+                Infrastructure-as-Code ready with full automation support.
+            </p>
 
-            <h3>Prerequisites</h3>
+            <div style="background: linear-gradient(135deg, #2d2d2d 0%, #1e1e1e 100%); color: white; padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+                <h3 style="color: white; margin: 0; border: none; padding: 0;">Quick Overview</h3>
+                <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Total Time: ~15 minutes (scripted) | Difficulty: Intermediate | Prerequisites: PowerShell/CLI</p>
+            </div>
+
+            <h3 style="border-left: 4px solid var(--primary-color); padding-left: 1rem; background: var(--dark-bg); color: white; padding: 1rem; border-radius: 4px;">📋 Prerequisites</h3>
             <ul>
                 <li>Azure PowerShell (Az module) or Azure CLI installed</li>
                 <li>Contributor role on target subscription</li>
@@ -1067,6 +1105,16 @@ az datafactory trigger list --resource-group $RESOURCE_GROUP --factory-name $DAT
                 <li>Connect Power BI for visualization</li>
                 <li>Set up alerts and monitoring</li>
             </ul>
+
+            <div style="text-align: center; margin: 2rem 0; padding: 2rem; background: var(--code-bg); border-radius: 8px;">
+                <h4>Developer Resources</h4>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <a href="#architecture" class="btn btn-primary">View Architecture →</a>
+                    <a href="#export-wizard" class="btn btn-primary">Export Wizard →</a>
+                    <a href="#config-builder" class="btn btn-primary">Config Builder →</a>
+                    <a href="#troubleshooting" class="btn btn-success">Troubleshooting →</a>
+                </div>
+            </div>
         </section>
 
         <!-- Original Deployment Section (hidden, kept for reference) -->
@@ -1076,7 +1124,11 @@ az datafactory trigger list --resource-group $RESOURCE_GROUP --factory-name $DAT
         </section>
 
         <!-- Export Setup Section -->
-        <section id="exports" class="card">
+        <section id="exports" class="card" style="display: none;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button type="button" onclick="showUserPath('selection')" class="btn btn-primary" style="font-size: 0.9rem;">← Change Deployment Path</button>
+            </div>
+
             <h2>Setting Up Cost Exports</h2>
 
             <div class="alert alert-warning">
@@ -1167,7 +1219,11 @@ az datafactory trigger list --resource-group $RESOURCE_GROUP --factory-name $DAT
         </section>
 
         <!-- Export Wizard Section -->
-        <section id="export-wizard" class="card interactive-section">
+        <section id="export-wizard" class="card interactive-section" style="display: none;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button type="button" onclick="showUserPath('selection')" class="btn btn-primary" style="font-size: 0.9rem;">← Change Deployment Path</button>
+            </div>
+
             <h2>🧙 Export Configuration Wizard</h2>
             <p>Use this wizard to generate PowerShell scripts or detailed portal instructions for configuring your Cost Management exports.</p>
 
@@ -1222,7 +1278,11 @@ az datafactory trigger list --resource-group $RESOURCE_GROUP --factory-name $DAT
         </section>
 
         <!-- CSP Section -->
-        <section id="csp" class="card">
+        <section id="csp" class="card" style="display: none;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button type="button" onclick="showUserPath('selection')" class="btn btn-primary" style="font-size: 0.9rem;">← Change Deployment Path</button>
+            </div>
+
             <h2>CSP Subscription Considerations</h2>
 
             <div class="alert alert-danger">
@@ -1277,7 +1337,11 @@ az datafactory trigger list --resource-group $RESOURCE_GROUP --factory-name $DAT
         </section>
 
         <!-- Troubleshooting Section -->
-        <section id="troubleshooting" class="card">
+        <section id="troubleshooting" class="card" style="display: none;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button type="button" onclick="showUserPath('selection')" class="btn btn-primary" style="font-size: 0.9rem;">← Change Deployment Path</button>
+            </div>
+
             <h2>Troubleshooting</h2>
 
             <h3>Common Issues and Solutions</h3>
@@ -1366,7 +1430,11 @@ az eventgrid system-topic create `
         </section>
 
         <!-- Resources Section -->
-        <section id="resources" class="card">
+        <section id="resources" class="card" style="display: none;">
+            <div style="text-align: right; margin-bottom: 1rem;">
+                <button type="button" onclick="showUserPath('selection')" class="btn btn-primary" style="font-size: 0.9rem;">← Change Deployment Path</button>
+            </div>
+
             <h2>Additional Resources</h2>
 
             <h3>Official Documentation</h3>
@@ -1484,15 +1552,26 @@ az eventgrid system-topic create `
             // Get all sections
             const selectionSection = document.getElementById('user-path-selection');
             const overviewSection = document.getElementById('overview');
+            const architectureSection = document.getElementById('architecture');
+            const configBuilderSection = document.getElementById('config-builder');
             const lambdaDeploySection = document.getElementById('deployment-lambda');
             const devDeploySection = document.getElementById('deployment-developer');
             const originalDeploySection = document.getElementById('deployment');
+            const exportsSection = document.getElementById('exports');
+            const exportWizardSection = document.getElementById('export-wizard');
+            const cspSection = document.getElementById('csp');
+            const troubleshootingSection = document.getElementById('troubleshooting');
+            const resourcesSection = document.getElementById('resources');
 
             // Hide all sections first
-            if (selectionSection) selectionSection.style.display = 'none';
-            if (overviewSection) overviewSection.style.display = 'none';
-            if (lambdaDeploySection) lambdaDeploySection.style.display = 'none';
-            if (devDeploySection) devDeploySection.style.display = 'none';
+            const allSections = [
+                selectionSection, overviewSection, architectureSection, configBuilderSection,
+                lambdaDeploySection, devDeploySection, originalDeploySection, exportsSection,
+                exportWizardSection, cspSection, troubleshootingSection, resourcesSection
+            ];
+            allSections.forEach(section => {
+                if (section) section.style.display = 'none';
+            });
 
             // Show relevant sections based on path
             if (path === 'selection') {
@@ -1500,8 +1579,11 @@ az eventgrid system-topic create `
                 // Scroll to top
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (path === 'lambda') {
+                // Business User path - show simplified sections
                 if (overviewSection) overviewSection.style.display = 'block';
                 if (lambdaDeploySection) lambdaDeploySection.style.display = 'block';
+                if (troubleshootingSection) troubleshootingSection.style.display = 'block';
+
                 // Scroll to deployment section
                 setTimeout(() => {
                     lambdaDeploySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1509,8 +1591,16 @@ az eventgrid system-topic create `
                 // Store preference
                 localStorage.setItem('finops-user-path', 'lambda');
             } else if (path === 'developer') {
+                // Developer path - show technical sections
                 if (overviewSection) overviewSection.style.display = 'block';
+                if (architectureSection) architectureSection.style.display = 'block';
+                if (configBuilderSection) configBuilderSection.style.display = 'block';
                 if (devDeploySection) devDeploySection.style.display = 'block';
+                if (exportWizardSection) exportWizardSection.style.display = 'block';
+                if (cspSection) cspSection.style.display = 'block';
+                if (troubleshootingSection) troubleshootingSection.style.display = 'block';
+                if (resourcesSection) resourcesSection.style.display = 'block';
+
                 // Scroll to deployment section
                 setTimeout(() => {
                     devDeploySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
