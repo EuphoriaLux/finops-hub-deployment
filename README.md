@@ -12,6 +12,8 @@ Click the button below to deploy to your Azure subscription:
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2Ftemplate.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FEuphoriaLux%2Ffinops-hub-deployment%2Fmain%2FcreateUiDefinition.json%3Ft%3D1762981499)
 
+> **📋 IMPORTANT:** After deployment completes, follow the [Post-Deployment Checklist](./POST-DEPLOYMENT-CHECKLIST.md) to verify automatic processing is configured correctly.
+
 ## 📋 What Gets Deployed
 
 This template deploys the core FinOps Hub infrastructure:
@@ -47,6 +49,22 @@ Before deploying, ensure you have:
 - ✅ Active Azure subscription
 - ✅ **Contributor** role on target subscription/resource group
 - ✅ 15-45 minutes for deployment
+
+### ⚠️ CRITICAL: Register Event Grid Provider First
+
+**You MUST register the Event Grid provider BEFORE deployment:**
+
+```powershell
+# Register Event Grid provider
+az provider register --namespace Microsoft.EventGrid
+
+# Verify registration (wait until status is "Registered")
+az provider show --namespace Microsoft.EventGrid --query "registrationState" --output tsv
+```
+
+**Why this matters:** If `Microsoft.EventGrid` is not registered before deployment, the Event Grid System Topic won't be created, and automatic export processing will NOT work. You'll need to create it manually later.
+
+**⏱️ Registration takes 1-2 minutes** - wait for `Registered` status before clicking "Deploy to Azure".
 
 ## 🔧 Deployment Methods
 
@@ -132,6 +150,7 @@ After deployment, you'll have these resources in your resource group:
 
 5. **finopshub[uniqueid]-[guid]** - Event Grid System Topic
    - For blob creation events
+   - **⚠️ Only created if Microsoft.EventGrid provider is registered before deployment**
 
 6. **Key Vault** - For secrets management (if configured)
 
@@ -144,6 +163,8 @@ After deployment, you'll have these resources in your resource group:
 - ✅ RBAC-based access control
 
 ## 🐛 Troubleshooting
+
+> **📋 First Time Setup:** If this is your first deployment, follow the [Post-Deployment Checklist](./POST-DEPLOYMENT-CHECKLIST.md) to verify all components are configured correctly.
 
 ### Deployment Script Failures (uploadSettings)
 
@@ -194,10 +215,50 @@ These diagnostic scripts will check:
 - Change the `hubName` parameter to a unique value
 - The system adds a unique suffix to resource names automatically
 
+### Event Grid System Topic is Missing
+
+**Symptoms:**
+- No automatic pipeline runs triggered when exports complete
+- Event Grid System Topic not visible in resource group
+
+**Cause:** Microsoft.EventGrid provider was not registered before deployment
+
+**Solution:**
+1. Register the Event Grid provider:
+   ```powershell
+   az provider register --namespace Microsoft.EventGrid
+   ```
+2. Create the Event Grid System Topic manually:
+   ```powershell
+   # Get your storage account resource ID
+   $STORAGE_ID = az storage account show `
+     --name <your-storage-account-name> `
+     --resource-group <your-resource-group> `
+     --query id --output tsv
+
+   # Create Event Grid System Topic
+   az eventgrid system-topic create `
+     --name <storage-account-name>-events `
+     --resource-group <your-resource-group> `
+     --source $STORAGE_ID `
+     --topic-type Microsoft.Storage.StorageAccounts `
+     --location <your-region>
+   ```
+3. Verify trigger starts successfully:
+   ```powershell
+   az datafactory trigger start `
+     --factory-name <your-data-factory-name> `
+     --resource-group <your-resource-group> `
+     --name msexports_ManifestAdded
+   ```
+
+See [Post-Deployment Checklist](./POST-DEPLOYMENT-CHECKLIST.md) for detailed verification steps.
+
 ### No cost data appearing after 24 hours
 - Verify Cost Management exports were created (check Azure Portal → Cost Management → Exports)
 - Check the `msexports` container in your storage account for data
 - Verify managed identity has required permissions on your subscriptions
+- **Check Event Grid System Topic exists** (see above)
 
 ### Network/Firewall Issues
 If your storage account has network restrictions:

@@ -432,12 +432,28 @@
             </ul>
 
             <h3>Prerequisites</h3>
+            <div class="alert alert-danger">
+                <strong>⚠️ CRITICAL:</strong> You MUST register the <code>Microsoft.EventGrid</code> resource provider <strong>BEFORE</strong> deployment. If not registered, the Event Grid System Topic won't be created and automatic processing will NOT work.
+            </div>
             <ul>
                 <li>Azure subscription with Owner or Contributor role</li>
+                <li><strong>Microsoft.EventGrid resource provider registered (REQUIRED BEFORE DEPLOYMENT)</strong></li>
                 <li>Microsoft.Storage resource provider registered</li>
                 <li>Microsoft.CostManagementExports resource provider registered</li>
                 <li>Cost Management Contributor role (for export creation)</li>
             </ul>
+
+            <h4>Register Event Grid Provider</h4>
+            <pre><code class="language-powershell"># Register Event Grid provider
+az provider register --namespace Microsoft.EventGrid
+
+# Verify registration (wait until status is "Registered")
+az provider show --namespace Microsoft.EventGrid --query "registrationState" --output tsv</code></pre>
+            <p><strong>⏱️ Registration takes 1-2 minutes</strong> - wait for "Registered" status before deploying.</p>
+
+            <div class="alert alert-info">
+                <strong>📋 Post-Deployment:</strong> After deployment completes, follow the <a href="../POST-DEPLOYMENT-CHECKLIST.md" target="_blank">Post-Deployment Checklist</a> to verify all components are configured correctly.
+            </div>
         </section>
 
         <!-- Architecture Section -->
@@ -657,14 +673,26 @@
             <p>Register the required Azure resource providers:</p>
 
             <pre><code># PowerShell
+Register-AzResourceProvider -ProviderNamespace Microsoft.EventGrid  # ⚠️ CRITICAL - Must be registered BEFORE deployment
 Register-AzResourceProvider -ProviderNamespace Microsoft.Storage
 Register-AzResourceProvider -ProviderNamespace Microsoft.CostManagementExports
 Register-AzResourceProvider -ProviderNamespace Microsoft.DataFactory
 
+# Verify Event Grid is registered (wait for "Registered" status)
+Get-AzResourceProvider -ProviderNamespace Microsoft.EventGrid | Select-Object ProviderNamespace, RegistrationState
+
 # Azure CLI
+az provider register --namespace Microsoft.EventGrid  # ⚠️ CRITICAL - Must be registered BEFORE deployment
 az provider register --namespace Microsoft.Storage
 az provider register --namespace Microsoft.CostManagementExports
-az provider register --namespace Microsoft.DataFactory</code></pre>
+az provider register --namespace Microsoft.DataFactory
+
+# Verify Event Grid is registered (wait for "Registered" status)
+az provider show --namespace Microsoft.EventGrid --query "registrationState" --output tsv</code></pre>
+
+            <div class="alert alert-danger">
+                <strong>⚠️ CRITICAL:</strong> Wait until <code>Microsoft.EventGrid</code> shows status "Registered" before proceeding to deployment. If you deploy before Event Grid is registered, the Event Grid System Topic won't be created and automatic processing will NOT work.
+            </div>
 
             <h3>Step 2: Deploy the ARM Template</h3>
 
@@ -911,10 +939,54 @@ New-AzResourceGroupDeployment `
 
             <h3>Common Issues and Solutions</h3>
 
+            <div class="alert alert-info">
+                <strong>📋 First Time Setup:</strong> If this is your first deployment, follow the <a href="../POST-DEPLOYMENT-CHECKLIST.md" target="_blank">Post-Deployment Checklist</a> to verify all components are configured correctly.
+            </div>
+
             <h4>Deployment Failures</h4>
             <div class="alert alert-warning">
                 <strong>Error:</strong> "The subscription is not registered to use namespace 'Microsoft.Storage'"
                 <br><strong>Solution:</strong> Register the required resource providers (see <a href="#deployment">Deployment Steps</a>)
+            </div>
+
+            <h4>Event Grid System Topic is Missing</h4>
+            <div class="alert alert-danger">
+                <strong>Symptoms:</strong>
+                <ul>
+                    <li>No automatic pipeline runs triggered when exports complete</li>
+                    <li>Event Grid System Topic not visible in resource group</li>
+                </ul>
+                <strong>Cause:</strong> Microsoft.EventGrid provider was not registered before deployment
+                <br><br>
+                <strong>Solution:</strong>
+                <ol>
+                    <li>Register the Event Grid provider:</li>
+                </ol>
+                <pre><code class="language-powershell">az provider register --namespace Microsoft.EventGrid</code></pre>
+                <ol start="2">
+                    <li>Create the Event Grid System Topic manually:</li>
+                </ol>
+                <pre><code class="language-powershell"># Get your storage account resource ID
+$STORAGE_ID = az storage account show `
+  --name &lt;your-storage-account-name&gt; `
+  --resource-group &lt;your-resource-group&gt; `
+  --query id --output tsv
+
+# Create Event Grid System Topic
+az eventgrid system-topic create `
+  --name &lt;storage-account-name&gt;-events `
+  --resource-group &lt;your-resource-group&gt; `
+  --source $STORAGE_ID `
+  --topic-type Microsoft.Storage.StorageAccounts `
+  --location &lt;your-region&gt;</code></pre>
+                <ol start="3">
+                    <li>Verify trigger starts successfully:</li>
+                </ol>
+                <pre><code class="language-powershell">az datafactory trigger start `
+  --factory-name &lt;your-data-factory-name&gt; `
+  --resource-group &lt;your-resource-group&gt; `
+  --name msexports_ManifestAdded</code></pre>
+                <p>See <a href="../POST-DEPLOYMENT-CHECKLIST.md" target="_blank">Post-Deployment Checklist</a> for detailed verification steps.</p>
             </div>
 
             <h4>Export Creation 401 Errors</h4>
